@@ -1,0 +1,1 @@
+export type ImageIndex = 0 | 1 | 2;
