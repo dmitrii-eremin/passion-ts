@@ -41,19 +41,7 @@ export class Game {
     }
 
     update(dt: number) {
-        if (this.passion.input.btn('ArrowUp')) {
-            this.player.move(0, -1, dt);
-        }
-        if (this.passion.input.btn('ArrowDown')) {
-            this.player.move(0, 1, dt);
-        }
-        if (this.passion.input.btn('ArrowLeft')) {
-            this.player.move(-1, 0, dt);
-        }
-        if (this.passion.input.btn('ArrowRight')) {
-            this.player.move(1, 0, dt);
-        }
-
+        this.controlPlayer(dt);
         this.player.update(dt);
     }
 
@@ -61,5 +49,31 @@ export class Game {
         this.passion.graphics.cls(Colors[1]);
 
         this.player.draw();
+    }
+
+    controlPlayer(dt: number) {
+        let dx = 0
+        let dy = 0
+
+        if (this.passion.input.btn('ArrowUp')) {
+            dy -= 1;
+        }
+        if (this.passion.input.btn('ArrowDown')) {
+            dy += 1;
+        }
+        if (this.passion.input.btn('ArrowLeft')) {
+            dx -= 1;
+        }
+        if (this.passion.input.btn('ArrowRight')) {
+            dx += 1;
+        }
+
+        if (dx !== 0 || dy !== 0) {
+            const length = Math.hypot(dx, dy);
+            dx /= length;
+            dy /= length;
+        }
+
+        this.player.move(dx, dy, dt);
     }
 }

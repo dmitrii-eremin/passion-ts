@@ -14,7 +14,13 @@ export class Passion {
         this.data.canvas = canvas;
         this.data.context = this.data.canvas.getContext('2d');
 
-        this.data.system = new System(this.data);
+        const onAfterAll = (dt: number) => {
+            this.data.system?.onAfterAll(dt);
+            this.data.graphics?.onAfterAll(dt);
+            this.data.input?.onAfterAll(dt);
+        };
+
+        this.data.system = new System(this.data, onAfterAll);
         this.data.graphics = new Graphics(this.data);
         this.data.input = new Input(this.data);
 
