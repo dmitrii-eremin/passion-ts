@@ -77,15 +77,41 @@ export class Input implements IInput, SubSystem {
         return (this.pressedKeys[key] - hold) % repeat === 0;
     }
 
-    _setKeyDown(event: KeyboardEvent) {
-        const code = event.code as Key;
+    _setMouseDown(event: MouseEvent) {
+        switch (event.button) {
+            case 0:
+                this._setKeyDown('MouseButtonLeft');
+                break;
+            case 1:
+                this._setKeyDown('MouseButtonMiddle');
+                break;
+            case 2:
+                this._setKeyDown('MouseButtonRight');
+                break;
+        }
+    }
+
+    _setMouseUp(event: MouseEvent) {
+        switch (event.button) {
+            case 0:
+                this._setKeyUp('MouseButtonLeft');
+                break;
+            case 1:
+                this._setKeyUp('MouseButtonMiddle');
+                break;
+            case 2:
+                this._setKeyUp('MouseButtonRight');
+                break;
+        }
+    }
+
+    _setKeyDown(code: Key) {
         if (!this.pressedKeys[code]) {
             this.pressedKeys[code] = 1;
         }
     }
 
-    _setKeyUp(event: KeyboardEvent) {
-        const code = event.code as Key;
+    _setKeyUp(code: Key) {
         delete this.pressedKeys[code];
         this.releasedKeys.add(code);
     }

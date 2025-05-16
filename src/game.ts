@@ -33,6 +33,9 @@ export class Game {
 
     private player: Player;
 
+    private lastTargetX?: number;
+    private lastTargetY?: number;
+
     constructor(passion: Passion) {
         this.passion = passion;
         this.player = new Player(passion, 120, 90);
@@ -43,10 +46,19 @@ export class Game {
     update(dt: number) {
         this.controlPlayer(dt);
         this.player.update(dt);
+
+        if (this.passion.input.btn('MouseButtonLeft')) {
+            this.lastTargetX = Math.ceil(this.passion.input.mouse_x);
+            this.lastTargetY = Math.ceil(this.passion.input.mouse_y);
+        }
     }
 
     draw() {
         this.passion.graphics.cls(Colors[1]);
+
+        if (this.lastTargetX && this.lastTargetY) {
+            this.passion.graphics.pset(this.lastTargetX, this.lastTargetY, Colors[7]);
+        }
 
         this.player.draw();
 
