@@ -5,12 +5,12 @@ export interface IResource {
 }
 
 export class Resource implements IResource, SubSystem {
-    private data: PassionData;
+    //private data: PassionData;
 
-    constructor(data: PassionData) {
-        this.data = data;
+    constructor(_data: PassionData) {
+      //  this.data = data;
     }
 
-    onAfterAll(dt: number) {
+    onAfterAll(_dt: number) {
     }
 }

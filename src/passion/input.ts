@@ -34,7 +34,7 @@ export class Input implements IInput, SubSystem {
         this.releasedKeys = new Set<Key>();
     }
 
-    onAfterAll(dt: number) {
+    onAfterAll(_dt: number) {
         for (const key in this.pressedKeys) {
             if (this.pressedKeys[key as Key] !== undefined) {
                 this.pressedKeys[key as Key]! += 1;
