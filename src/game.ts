@@ -49,6 +49,9 @@ export class Game {
         this.passion.graphics.cls(Colors[1]);
 
         this.player.draw();
+
+        this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, Colors[14]);
+        this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, Colors[14]);
     }
 
     controlPlayer(dt: number) {
