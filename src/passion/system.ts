@@ -1,8 +1,12 @@
 import type { DrawCallback, UpdateCallback } from "./callbacks";
-import type { Color } from "./color";
 import type { PassionData } from "./data";
 
-export class System {
+export interface ISystem {
+    init(width: number, height: number, title?: string): void;
+    run(update: UpdateCallback, draw: DrawCallback): void;
+}
+
+export class System implements ISystem {
     private data: PassionData;
 
     constructor(data: PassionData) {

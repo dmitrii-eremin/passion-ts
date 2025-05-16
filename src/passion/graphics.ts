@@ -3,7 +3,31 @@ import type { PassionData } from "./data";
 import { BdfFont } from "./internal/bdf_font";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
 
-export class Graphics {
+export interface IGraphics {
+    cls(color: Color): void;
+
+    pget(x: number, y: number): Color;
+    pset(x: number, y: number, color: Color): void;
+
+    line(x1: number, y1: number, x2: number, y2: number, color: Color): void;
+
+    rect(x: number, y: number, w: number, h: number, color: Color): void;
+    rectb(x: number, y: number, w: number, h: number, color: Color): void;
+
+    circ(x: number, y: number, r: number, color: Color): void;
+    circb(x: number, y: number, r: number, color: Color): void;
+
+    elli(x: number, y: number, w: number, h: number, color: Color): void;
+    ellib(x: number, y: number, w: number, h: number, color: Color): void;
+
+    tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color): void;
+    trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color): void;
+
+    fill(x: number, y: number, color: Color): void;
+    text(x: number, y: number, text: string, color: Color): void;
+}
+
+export class Graphics implements IGraphics {
     private data: PassionData;
     private bdfFont: BdfFont;
 
