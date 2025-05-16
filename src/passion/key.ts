@@ -1,4 +1,7 @@
 export type Key = 
+    'MouseButtonLeft' |
+    'MouseButtonMiddle' |
+    'MouseButtonRight' |
     'AltLeft' |
     'AltRight' |
     'ArrowDown' |

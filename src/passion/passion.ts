@@ -2,11 +2,14 @@ import { PassionData } from './data';
 import { type ISystem, System } from './system';
 import { type IGraphics, Graphics } from './graphics';
 import { type IInput, Input } from './input';
+import { type IResource, Resource } from './resource';
+import type { Key } from './key';
 
 export class Passion {
     private data: PassionData = new PassionData();
 
     system: ISystem;
+    resource: IResource;
     graphics: IGraphics;
     input: IInput;
 
@@ -16,15 +19,18 @@ export class Passion {
 
         const onAfterAll = (dt: number) => {
             this.data.system?.onAfterAll(dt);
+            this.data.resource?.onAfterAll(dt);
             this.data.graphics?.onAfterAll(dt);
             this.data.input?.onAfterAll(dt);
         };
 
         this.data.system = new System(this.data, onAfterAll);
+        this.data.resource = new Resource(this.data);
         this.data.graphics = new Graphics(this.data);
         this.data.input = new Input(this.data);
 
         this.system = this.data.system;
+        this.resource = this.data.resource;
         this.graphics = this.data.graphics;
         this.input = this.data.input;
 
@@ -38,18 +44,19 @@ export class Passion {
 
         canvas.addEventListener('mousedown', event => {
              canvas.focus();
+             this.data.input?._setMouseDown(event);
         });
 
         canvas.addEventListener('mouseup', event => {
-            // Handle mouse up event
+            this.data.input?._setMouseUp(event);
         });
 
         canvas.addEventListener('keydown', event => {
-            this.data.input?._setKeyDown(event);
+            this.data.input?._setKeyDown(event.code as Key);
         });
 
         canvas.addEventListener('keyup', event => {
-            this.data.input?._setKeyUp(event);
+            this.data.input?._setKeyUp(event.code as Key);
         });
 
         canvas.addEventListener('mousemove', event => {
