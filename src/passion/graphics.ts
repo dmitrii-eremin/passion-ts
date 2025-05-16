@@ -1,5 +1,7 @@
+import type { ImageIndex } from "../constants";
 import { type Color } from "./color";
 import type { PassionData } from "./data";
+import { PassionImage } from "./image";
 import { BdfFont } from "./internal/bdf_font";
 import { Palette } from "./internal/palette";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
@@ -27,12 +29,20 @@ export interface IGraphics {
 
     fill(x: number, y: number, col: Color): void;
     text(x: number, y: number, text: string, col: Color): void;
+
+    blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void;
 }
 
 export class Graphics implements IGraphics, SubSystem {
     private data: PassionData;
     private bdfFont: BdfFont;
     private palette: Palette = new Palette();
+
+    public readonly images: PassionImage[] = [
+        new PassionImage(),
+        new PassionImage(),
+        new PassionImage(),
+    ];
 
     constructor(data: PassionData) {
         this.data = data;
@@ -288,5 +298,14 @@ export class Graphics implements IGraphics, SubSystem {
         this.bdfFont.render(x, y, text, (x: number, y: number) => {
             this.pset(x, y, col);
         });
+    }
+
+    blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number) {
+        if (!this.data.isReady()) {
+            return;
+        }
+
+        const color = colkey ? this.palette.getColor(colkey) : undefined;
+        this.images[img].blt(this.data.context!, x, y, u, v, w, h, color, rotate, scale);
     }
 }

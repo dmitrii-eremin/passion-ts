@@ -6,6 +6,9 @@ class Player {
     playerX: number = 0;
     playerY: number = 0;
     speed: number = 100;
+    angle: number = 0;
+
+    private lastdx: number = -1;
 
     constructor(passion: Passion, x: number, y: number) {
         this.passion = passion;
@@ -13,17 +16,23 @@ class Player {
         this.playerY = y;
     }
 
-    update(_dt: number) {
-        
+    update(dt: number) {
+        this.angle += 45 * dt;
     }
 
     move(dx: number, dy: number, dt: number) {
         this.playerX += dx * this.speed * dt;
         this.playerY += dy * this.speed * dt;
+        if (dx < 0) {
+            this.lastdx = -1;
+        }
+        else if (dx > 0) {
+            this.lastdx = 1;
+        }
     }
 
     draw() {
-        this.passion.graphics.circb(Math.ceil(this.playerX), Math.ceil(this.playerY), 3, 12);
+        this.passion.graphics.blt(Math.ceil(this.playerX), Math.ceil(this.playerY), 0, 0, 0, this.lastdx < 0 ? 16 : -16, 16, undefined, this.angle, 2);
     }
 }
 
@@ -31,9 +40,6 @@ export class Game {
     private passion: Passion;
 
     private player: Player;
-
-    private lastTargetX?: number;
-    private lastTargetY?: number;
 
     constructor(passion: Passion) {
         this.passion = passion;
@@ -45,24 +51,19 @@ export class Game {
     update(dt: number) {
         this.controlPlayer(dt);
         this.player.update(dt);
-
-        if (this.passion.input.btn('MouseButtonLeft')) {
-            this.lastTargetX = Math.ceil(this.passion.input.mouse_x);
-            this.lastTargetY = Math.ceil(this.passion.input.mouse_y);
-        }
     }
 
     draw() {
         this.passion.graphics.cls(1);
 
-        if (this.lastTargetX && this.lastTargetY) {
-            this.passion.graphics.pset(this.lastTargetX, this.lastTargetY, 7);
-        }
+        this.passion.graphics.blt(50, 45, 0, 0, 0, 16, 16);
+        this.passion.graphics.blt(90, 125, 0, 0, 0, -16, 16);
 
         this.player.draw();
 
         this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, 14);
         this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, 14);
+        this.passion.graphics.text(3, 27, `Pos: ${Math.ceil(this.player.playerX)}, ${Math.ceil(this.player.playerY)}`, 14);
     }
 
     controlPlayer(dt: number) {
