@@ -1,4 +1,3 @@
-import { Colors } from './passion/color';
 import type { Passion } from './passion/passion';
 
 class Player {
@@ -14,7 +13,7 @@ class Player {
         this.playerY = y;
     }
 
-    update(dt: number) {
+    update(_dt: number) {
         
     }
 
@@ -24,7 +23,7 @@ class Player {
     }
 
     draw() {
-        this.passion.graphics.circb(Math.ceil(this.playerX), Math.ceil(this.playerY), 3, Colors[12]);
+        this.passion.graphics.circb(Math.ceil(this.playerX), Math.ceil(this.playerY), 3, 12);
     }
 }
 
@@ -54,16 +53,16 @@ export class Game {
     }
 
     draw() {
-        this.passion.graphics.cls(Colors[1]);
+        this.passion.graphics.cls(1);
 
         if (this.lastTargetX && this.lastTargetY) {
-            this.passion.graphics.pset(this.lastTargetX, this.lastTargetY, Colors[7]);
+            this.passion.graphics.pset(this.lastTargetX, this.lastTargetY, 7);
         }
 
         this.player.draw();
 
-        this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, Colors[14]);
-        this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, Colors[14]);
+        this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, 14);
+        this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, 14);
     }
 
     controlPlayer(dt: number) {

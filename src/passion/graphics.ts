@@ -1,83 +1,86 @@
-import { Colors, type Color } from "./color";
+import { type Color } from "./color";
 import type { PassionData } from "./data";
 import { BdfFont } from "./internal/bdf_font";
+import { Palette } from "./internal/palette";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
 import type { SubSystem } from "./subsystem";
 
 export interface IGraphics {
-    cls(color: Color): void;
+    cls(col: Color): void;
 
     pget(x: number, y: number): Color;
-    pset(x: number, y: number, color: Color): void;
+    pset(x: number, y: number, col: Color): void;
 
-    line(x1: number, y1: number, x2: number, y2: number, color: Color): void;
+    line(x1: number, y1: number, x2: number, y2: number, col: Color): void;
 
-    rect(x: number, y: number, w: number, h: number, color: Color): void;
-    rectb(x: number, y: number, w: number, h: number, color: Color): void;
+    rect(x: number, y: number, w: number, h: number, col: Color): void;
+    rectb(x: number, y: number, w: number, h: number, col: Color): void;
 
-    circ(x: number, y: number, r: number, color: Color): void;
-    circb(x: number, y: number, r: number, color: Color): void;
+    circ(x: number, y: number, r: number, col: Color): void;
+    circb(x: number, y: number, r: number, col: Color): void;
 
-    elli(x: number, y: number, w: number, h: number, color: Color): void;
-    ellib(x: number, y: number, w: number, h: number, color: Color): void;
+    elli(x: number, y: number, w: number, h: number, col: Color): void;
+    ellib(x: number, y: number, w: number, h: number, col: Color): void;
 
-    tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color): void;
-    trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color): void;
+    tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color): void;
+    trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color): void;
 
-    fill(x: number, y: number, color: Color): void;
-    text(x: number, y: number, text: string, color: Color): void;
+    fill(x: number, y: number, col: Color): void;
+    text(x: number, y: number, text: string, col: Color): void;
 }
 
 export class Graphics implements IGraphics, SubSystem {
     private data: PassionData;
     private bdfFont: BdfFont;
+    private palette: Palette = new Palette();
 
     constructor(data: PassionData) {
         this.data = data;
         this.bdfFont = new BdfFont(DefaultBdfFont);
     }
 
-    onAfterAll(dt: number) {
+    onAfterAll(_dt: number) {
 
     }
 
-    cls(color: Color) {
+    cls(col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
-        this.data.context!.fillStyle = color;
+        this.data.context!.fillStyle = this.palette.getColor(col);
         this.data.context!.fillRect(0, 0, this.data.canvas!.width, this.data.canvas!.height);
     }
 
     pget(x: number, y: number): Color {
         if (!this.data.isReady()) {
-            return Colors[0];
+            return 0;
         }
 
         const ctx = this.data.context!;
         const imageData = ctx.getImageData(x, y, 1, 1).data;
         const [r, g, b, _] = imageData;
-        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}` as Color;
+        const color = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        return this.palette.getColorIndex(color);
     }
 
-    pset(x: number, y: number, color: Color) {
+    pset(x: number, y: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
         ctx.fillRect(x, y, 1, 1);
     }
 
-    line(x1: number, y1: number, x2: number, y2: number, color: Color) {
+    line(x1: number, y1: number, x2: number, y2: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
 
         let dx = Math.abs(x2 - x1);
         let dy = Math.abs(y2 - y1);
@@ -95,52 +98,52 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    rect(x: number, y: number, w: number, h: number, color: Color) {
+    rect(x: number, y: number, w: number, h: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
-        this.data.context!.fillStyle = color;
+        this.data.context!.fillStyle = this.palette.getColor(col);
         this.data.context!.fillRect(x, y, w, h);
     }
 
-    rectb(x: number, y: number, w: number, h: number, color: Color) {
+    rectb(x: number, y: number, w: number, h: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
-        this.line(x, y, x + w - 1, y, color);
-        this.line(x, y, x, y + h - 1, color);
-        this.line(x + w - 1, y, x + w - 1, y + h - 1, color);
-        this.line(x, y + h - 1, x + w - 1, y + h - 1, color);
+        this.line(x, y, x + w - 1, y, col);
+        this.line(x, y, x, y + h - 1, col);
+        this.line(x + w - 1, y, x + w - 1, y + h - 1, col);
+        this.line(x, y + h - 1, x + w - 1, y + h - 1, col);
     }
 
-    circ(x: number, y: number, r: number, color: Color) {
+    circ(x: number, y: number, r: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
         
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
         const r2 = r * r;
         for (let dy = -r; dy <= r; dy++) {
             for (let dx = -r; dx <= r; dx++) {
                 if (dx * dx + dy * dy <= r2) {
-                    ctx.fillStyle = color;
+                    ctx.fillStyle = this.palette.getColor(col);
                     ctx.fillRect(x + dx, y + dy, 1, 1);
                 }
             }
         }
     }
 
-    circb(x: number, y: number, r: number, color: Color) {
+    circb(x: number, y: number, r: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
 
         let r2 = r * r;
         let r1 = (r - 1) * (r - 1);
@@ -155,13 +158,13 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    elli(x: number, y: number, w: number, h: number, color: Color) {
+    elli(x: number, y: number, w: number, h: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
 
         const a = w / 2;
         const b = h / 2;
@@ -174,13 +177,13 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    ellib(x: number, y: number, w: number, h: number, color: Color) {
+    ellib(x: number, y: number, w: number, h: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
         const ctx = this.data.context!;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.palette.getColor(col);
 
         const a = w / 2;
         const b = h / 2;
@@ -202,7 +205,7 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color) {
+    tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
@@ -227,23 +230,23 @@ export class Graphics implements IGraphics, SubSystem {
                     (w0 >= 0 && w1 >= 0 && w2 >= 0) ||
                     (w0 <= 0 && w1 <= 0 && w2 <= 0)
                 ) {
-                    this.pset(x, y, color);
+                    this.pset(x, y, col);
                 }
             }
         }
     }
 
-    trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: Color) {
+    trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
 
-        this.line(x1, y1, x2, y2, color);
-        this.line(x2, y2, x3, y3, color);
-        this.line(x3, y3, x1, y1, color);
+        this.line(x1, y1, x2, y2, col);
+        this.line(x2, y2, x3, y3, col);
+        this.line(x3, y3, x1, y1, col);
     }
 
-    fill(x: number, y: number, color: Color) {
+    fill(x: number, y: number, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
@@ -252,7 +255,7 @@ export class Graphics implements IGraphics, SubSystem {
         const height = this.data.canvas!.height;
 
         const targetColor = this.pget(x, y);
-        if (targetColor === color) {
+        if (targetColor === col) {
             return;
         }
 
@@ -268,7 +271,7 @@ export class Graphics implements IGraphics, SubSystem {
                 continue;
             }
 
-            this.pset(cx, cy, color);
+            this.pset(cx, cy, col);
 
             stack.push([cx + 1, cy]);
             stack.push([cx - 1, cy]);
@@ -277,13 +280,13 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    text(x: number, y: number, text: string, color: Color) {
+    text(x: number, y: number, text: string, col: Color) {
         if (!this.data.isReady()) {
             return;
         }
         
         this.bdfFont.render(x, y, text, (x: number, y: number) => {
-            this.pset(x, y, color);
+            this.pset(x, y, col);
         });
     }
 }
