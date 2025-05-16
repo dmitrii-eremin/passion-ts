@@ -1,8 +1,14 @@
-import type { PassionData } from "./data";
+import type { PassionData } from './data';
+import type { Key } from './key';
 
 export interface IInput {
     readonly mouse_x: number;
     readonly mouse_y: number;
+    readonly mouse_wheel_x: number;
+    readonly mouse_wheel_y: number;
+
+    mouse(visible: boolean): void;
+    btn(key: Key): boolean;
 }
 
 export class Input implements IInput {
@@ -11,11 +17,45 @@ export class Input implements IInput {
     private clientMouseX: number = 0;
     private clientMouseY: number = 0;
 
+    private pressedKeys: Set<Key> = new Set();
+
     public mouse_x: number = 0;
     public mouse_y: number = 0;
+    public mouse_wheel_x: number = 0;
+    public mouse_wheel_y: number = 0;
 
     constructor(data: PassionData) {
         this.data = data;
+    }
+
+    mouse(visible: boolean): void {
+        if (!this.data.isReady()) {
+            return;
+        }
+        this.data.canvas!.style.cursor = visible ? 'default' : 'none';
+    }
+
+    btn(key: Key): boolean {
+        return this.pressedKeys.has(key);
+    }
+
+    _setKeyDown(event: KeyboardEvent) {
+        this.pressedKeys.add(event.code as Key);
+    }
+
+    _setKeyUp(event: KeyboardEvent) {
+        this.pressedKeys.delete(event.code as Key);
+    }
+
+    _setMouseWheel(deltaX: number, deltaY: number) {
+        this.mouse_wheel_x = deltaX;
+        this.mouse_wheel_y = deltaY;
+        if (Math.abs(this.mouse_wheel_x) <= 1) {
+            this.mouse_wheel_x = 0;
+        }
+        if (Math.abs(this.mouse_wheel_y) <= 1) {
+            this.mouse_wheel_y = 0;
+        }
     }
 
     _setClientMouse(x: number, y: number) {

@@ -22,18 +22,28 @@ export class Passion {
         this.graphics = this.data.graphics;
         this.input = this.data.input;
 
+        canvas.tabIndex = 0;
         canvas.addEventListener('wheel', event => {
+            this.data.input?._setMouseWheel(event.deltaX, event.deltaY);
             event.preventDefault();
         }, {
             passive: false,
         });
 
         canvas.addEventListener('mousedown', event => {
-            // Handle mouse down event
+             canvas.focus();
         });
 
         canvas.addEventListener('mouseup', event => {
             // Handle mouse up event
+        });
+
+        canvas.addEventListener('keydown', event => {
+            this.data.input?._setKeyDown(event);
+        });
+
+        canvas.addEventListener('keyup', event => {
+            this.data.input?._setKeyUp(event);
         });
 
         canvas.addEventListener('mousemove', event => {
