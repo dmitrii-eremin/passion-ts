@@ -2,6 +2,7 @@ import { Colors, type Color } from "./color";
 import type { PassionData } from "./data";
 import { BdfFont } from "./internal/bdf_font";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
+import type { SubSystem } from "./subsystem";
 
 export interface IGraphics {
     cls(color: Color): void;
@@ -27,13 +28,17 @@ export interface IGraphics {
     text(x: number, y: number, text: string, color: Color): void;
 }
 
-export class Graphics implements IGraphics {
+export class Graphics implements IGraphics, SubSystem {
     private data: PassionData;
     private bdfFont: BdfFont;
 
     constructor(data: PassionData) {
         this.data = data;
         this.bdfFont = new BdfFont(DefaultBdfFont);
+    }
+
+    onAfterAll(dt: number) {
+
     }
 
     cls(color: Color) {

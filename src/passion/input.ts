@@ -1,5 +1,6 @@
 import type { PassionData } from './data';
 import type { Key } from './key';
+import type { SubSystem } from './subsystem';
 
 export interface IInput {
     readonly mouse_x: number;
@@ -9,15 +10,18 @@ export interface IInput {
 
     mouse(visible: boolean): void;
     btn(key: Key): boolean;
+    btnr(key: Key): boolean;
+    btnp(key: Key, hold?: number, repeat?: number): boolean;
 }
 
-export class Input implements IInput {
+export class Input implements IInput, SubSystem {
     private data: PassionData;
 
     private clientMouseX: number = 0;
     private clientMouseY: number = 0;
 
-    private pressedKeys: Set<Key> = new Set();
+    private pressedKeys: Partial<Record<Key, number>>;
+    private releasedKeys: Set<Key>;
 
     public mouse_x: number = 0;
     public mouse_y: number = 0;
@@ -26,6 +30,17 @@ export class Input implements IInput {
 
     constructor(data: PassionData) {
         this.data = data;
+        this.pressedKeys = {};
+        this.releasedKeys = new Set<Key>();
+    }
+
+    onAfterAll(dt: number) {
+        for (const key in this.pressedKeys) {
+            if (this.pressedKeys[key as Key] !== undefined) {
+                this.pressedKeys[key as Key]! += 1;
+            }
+        }
+        this.releasedKeys.clear();
     }
 
     mouse(visible: boolean): void {
@@ -36,15 +51,43 @@ export class Input implements IInput {
     }
 
     btn(key: Key): boolean {
-        return this.pressedKeys.has(key);
+        return !!this.pressedKeys[key];
+    }
+
+    btnr(key: Key): boolean {
+        return this.releasedKeys.has(key);
+    }
+
+    btnp(key: Key, hold?: number, repeat?: number) {
+        if (hold === undefined && repeat === undefined) {
+            return this.pressedKeys[key] === 1;
+        }
+        if (hold === undefined) {
+            hold = 1;
+        }
+
+        if (repeat === undefined) {
+            return this.pressedKeys[key] === hold;
+        }
+
+        if (!this.pressedKeys[key] || this.pressedKeys[key] < hold) {
+            return false;
+        }
+
+        return (this.pressedKeys[key] - hold) % repeat === 0;
     }
 
     _setKeyDown(event: KeyboardEvent) {
-        this.pressedKeys.add(event.code as Key);
+        const code = event.code as Key;
+        if (!this.pressedKeys[code]) {
+            this.pressedKeys[code] = 1;
+        }
     }
 
     _setKeyUp(event: KeyboardEvent) {
-        this.pressedKeys.delete(event.code as Key);
+        const code = event.code as Key;
+        delete this.pressedKeys[code];
+        this.releasedKeys.add(code);
     }
 
     _setMouseWheel(deltaX: number, deltaY: number) {

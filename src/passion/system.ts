@@ -1,16 +1,25 @@
 import type { DrawCallback, UpdateCallback } from "./callbacks";
 import type { PassionData } from "./data";
+import type { SubSystem } from "./subsystem";
 
 export interface ISystem {
     init(width: number, height: number, title?: string): void;
     run(update: UpdateCallback, draw: DrawCallback): void;
 }
 
-export class System implements ISystem {
-    private data: PassionData;
+export type OnAfterAllCallback = (dt: number) => void;
 
-    constructor(data: PassionData) {
+export class System implements ISystem, SubSystem {
+    private data: PassionData;
+    private onAfterAllCallback?: OnAfterAllCallback;
+
+    constructor(data: PassionData, onAfterAllCallback?: OnAfterAllCallback) {
         this.data = data;
+        this.onAfterAllCallback = onAfterAllCallback;
+    }
+
+    onAfterAll(dt: number) {
+
     }
 
     init(width: number, height: number, title: string = "passion") {
@@ -28,6 +37,10 @@ export class System implements ISystem {
 
             update(dt);
             draw();
+
+            if (this.onAfterAllCallback) {
+                this.onAfterAllCallback(dt);
+            }
 
             requestAnimationFrame(gameLoop);
         };
