@@ -8,6 +8,8 @@ import { DefaultBdfFont } from "./resources/default_bdf_font";
 import type { SubSystem } from "./subsystem";
 
 export interface IGraphics {
+    readonly images: PassionImage[];
+
     cls(col: Color): void;
 
     pget(x: number, y: number): Color;
@@ -38,12 +40,6 @@ export class Graphics implements IGraphics, SubSystem {
     private bdfFont: BdfFont;
     private palette: Palette = new Palette();
 
-    public readonly images: PassionImage[] = [
-        new PassionImage(),
-        new PassionImage(),
-        new PassionImage(),
-    ];
-
     constructor(data: PassionData) {
         this.data = data;
         this.bdfFont = new BdfFont(DefaultBdfFont);
@@ -51,6 +47,10 @@ export class Graphics implements IGraphics, SubSystem {
 
     onAfterAll(_dt: number) {
 
+    }
+
+    get images(): PassionImage[] {
+        return this.data.images;
     }
 
     cls(col: Color) {
