@@ -1,5 +1,3 @@
-import type { Color } from "./color";
-
 export class PassionImage {
     private data: HTMLImageElement;
     private isReady: boolean = false;
