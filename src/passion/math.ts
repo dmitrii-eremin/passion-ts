@@ -21,6 +21,7 @@ export class PassionMath implements IMath, SubSystem {
     private perlinNoise: PerlinNoise = new PerlinNoise();
     private randomGenerator: PassionRandom = new PassionRandom();
 
+    onBeforeAll(_dt: number) {}
     onAfterAll(_dt: number) {}
 
     ceil(x: number): number {

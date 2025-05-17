@@ -10,6 +10,8 @@ import type { SubSystem } from "./subsystem";
 export interface IGraphics {
     readonly images: PassionImage[];
 
+    camera(x?: number, y?: number): void;
+
     cls(col: Color): void;
 
     pget(x: number, y: number): Color;
@@ -40,17 +42,30 @@ export class Graphics implements IGraphics, SubSystem {
     private bdfFont: BdfFont;
     private palette: Palette = new Palette();
 
+    private camX: number = 0;
+    private camY: number = 0;
+
     constructor(data: PassionData) {
         this.data = data;
         this.bdfFont = new BdfFont(DefaultBdfFont);
     }
 
-    onAfterAll(_dt: number) {
-
-    }
+    onBeforeAll(_dt: number) {}
+    onAfterAll(_dt: number) {}
 
     get images(): PassionImage[] {
         return this.data.images;
+    }
+
+    camera(x?: number, y?: number) {
+        if (!this.data.isReady()) {
+            return;
+        }
+
+        if (x === undefined) x = 0;
+        if (y === undefined) y = 0;
+
+        this.data.context!.setTransform(1, 0, 0, 1, -x, -y);
     }
 
     cls(col: Color) {
@@ -58,8 +73,13 @@ export class Graphics implements IGraphics, SubSystem {
             return;
         }
 
+        const transform = this.data.context!.getTransform();
+        this.data.context!.resetTransform();
+
         this.data.context!.fillStyle = this.palette.getColor(col);
-        this.data.context!.fillRect(0, 0, this.data.canvas!.width, this.data.canvas!.height);
+        this.data.context!.fillRect(-100, -100, 100 + this.data.canvas!.width, 100 + this.data.canvas!.height);
+
+        this.data.context!.setTransform(transform);
     }
 
     pget(x: number, y: number): Color {

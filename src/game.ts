@@ -59,12 +59,19 @@ export class Game {
     }
 
     draw() {
+        this.passion.graphics.camera(
+            this.player.playerX - this.passion.system.width / 2 + 8,
+            this.player.playerY - this.passion.system.height / 2 + 8,
+        );
+
         this.passion.graphics.cls(1);
 
         this.passion.graphics.blt(50, 45, 0, 0, 0, 16, 16);
         this.passion.graphics.blt(90, 125, 0, 0, 0, -16, 16);
 
         this.player.draw();
+
+        this.passion.graphics.camera();
 
         this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, 14);
         this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, 14);
