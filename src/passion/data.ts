@@ -3,10 +3,14 @@ import { Graphics } from './graphics';
 import { Input } from './input';
 import { Resource } from './resource';
 import { PassionMath } from './math';
+import { PassionImage } from './image';
+import { MAX_IMAGE_COUNT } from '../constants';
 
 export class PassionData {
     public canvas: HTMLCanvasElement | null = null;
     public context: CanvasRenderingContext2D | null = null;
+
+    public images: PassionImage[] = Array.from({ length: MAX_IMAGE_COUNT }, () => new PassionImage());
 
     system?: System;
     resource?: Resource;

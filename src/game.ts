@@ -16,8 +16,8 @@ class Player {
         this.playerY = y;
     }
 
-    update(dt: number) {
-        this.angle += 45 * dt;
+    update(_dt: number) {
+        // this.angle += 45 * dt;
     }
 
     move(dx: number, dy: number, dt: number) {
@@ -32,7 +32,11 @@ class Player {
     }
 
     draw() {
-        this.passion.graphics.blt(Math.ceil(this.playerX), Math.ceil(this.playerY), 0, 0, 0, this.lastdx < 0 ? 16 : -16, 16, undefined, this.angle, 2);
+        const x = Math.ceil(this.playerX);
+        const y = Math.ceil(this.playerY);
+
+        this.passion.graphics.text(x - 10, y - 12, 'mitta', 7);
+        this.passion.graphics.blt(x, y, 0, 0, 0, this.lastdx < 0 ? 16 : -16, 16, undefined, this.angle, 1);
     }
 }
 
@@ -46,6 +50,7 @@ export class Game {
         this.player = new Player(passion, 120, 90);
 
         this.passion.system.init(240, 180, 'A demo game');
+        this.passion.resource.loadImage(0, './cat_16x16.png');
     }
 
     update(dt: number) {
