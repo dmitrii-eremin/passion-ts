@@ -43,12 +43,27 @@ export class Game {
 
     private player: Player;
 
+    posX: number[] = [];
+    posY: number[] = [];
+    posW: number[] = [];
+
     constructor(passion: Passion) {
         this.passion = passion;
         this.player = new Player(passion, 120, 90);
 
         this.passion.system.init(240, 180, 'A demo game');
         this.passion.resource.loadImage(0, './cat_16x16.png');
+
+        this.passion.resource.loadSound(0, './Jump1.wav');
+        this.passion.resource.loadSound(1, './Step1.wav');
+
+        this.passion.audio.speed(1, 3);
+
+        for (let i = 0; i < 25; i++) {
+            this.posX.push(Math.floor(Math.random() * 400) - 100);
+            this.posY.push(Math.floor(Math.random() * 400) - 100);
+            this.posW.push(Math.random() < 0.5 ? 16 : -16);
+        }
     }
 
     update(dt: number) {
@@ -64,8 +79,10 @@ export class Game {
 
         this.passion.graphics.cls(1);
 
-        this.passion.graphics.blt(50, 45, 0, 0, 0, 16, 16);
-        this.passion.graphics.blt(90, 125, 0, 0, 0, -16, 16);
+        for (let i = 0; i < 25; i++) {
+            this.passion.graphics.blt(this.posX[i], this.posY[i], 0, 0, 0, this.posW[i], 16);
+        }
+        
 
         this.player.draw();
 
@@ -97,6 +114,11 @@ export class Game {
             const length = Math.hypot(dx, dy);
             dx /= length;
             dy /= length;
+
+            this.passion.audio.play(1);
+        }
+        else {
+            this.passion.audio.stop(1);
         }
 
         this.player.move(dx, dy, dt);

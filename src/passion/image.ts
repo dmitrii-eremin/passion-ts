@@ -4,7 +4,6 @@ export class PassionImage {
 
     constructor() {
         this.data = new Image(256, 256);
-        // this.data.src = './cat_16x16.png';
         this.data.onload = _event => {
             this.isReady = true;
         };
