@@ -8,7 +8,7 @@ export interface ISystem {
     readonly height: number;
     readonly frame_count: number;
 
-    init(width: number, height: number, title?: string): void;
+    init(width: number, height: number, title?: string, display_scale?: number): void;
     run(update: UpdateCallback, draw: DrawCallback): void;
 }
 
@@ -46,10 +46,11 @@ export class System implements ISystem, SubSystem {
         return this.fpsCounter.FPS;
     }
 
-    init(width: number, height: number, title: string = "passion") {
+    init(width: number, height: number, title: string = "passion", displayScale: number = 1) {
         document.title = title;
         this.data.canvas!.width = width;
         this.data.canvas!.height = height;
+        this.data.displayScale = displayScale;
     }
 
     run(update: UpdateCallback, draw: DrawCallback) {
@@ -61,6 +62,11 @@ export class System implements ISystem, SubSystem {
 
             if (this.onBeforeAllCallback) {
                 this.onBeforeAllCallback(dt);
+            }
+
+            if (this.data.context) {
+                const scale = this.data.displayScale;
+                this.data.context!.setTransform(scale, 0, 0, scale, 0, 0);
             }
 
             update(dt);
