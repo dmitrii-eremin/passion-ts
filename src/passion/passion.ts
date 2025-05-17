@@ -3,6 +3,7 @@ import { type ISystem, System } from './system';
 import { type IGraphics, Graphics } from './graphics';
 import { type IInput, Input } from './input';
 import { type IResource, Resource } from './resource';
+import { type IMath, PassionMath } from './math';
 import type { Key } from './key';
 
 export class Passion {
@@ -12,6 +13,7 @@ export class Passion {
     resource: IResource;
     graphics: IGraphics;
     input: IInput;
+    math: IMath;
 
     constructor(canvas: HTMLCanvasElement) {
         this.data.canvas = canvas;
@@ -22,17 +24,20 @@ export class Passion {
             this.data.resource?.onAfterAll(dt);
             this.data.graphics?.onAfterAll(dt);
             this.data.input?.onAfterAll(dt);
+            this.data.math?.onAfterAll(dt);
         };
 
         this.data.system = new System(this.data, onAfterAll);
         this.data.resource = new Resource(this.data);
         this.data.graphics = new Graphics(this.data);
         this.data.input = new Input(this.data);
+        this.data.math = new PassionMath();
 
         this.system = this.data.system;
         this.resource = this.data.resource;
         this.graphics = this.data.graphics;
         this.input = this.data.input;
+        this.math = this.data.math;
 
         canvas.tabIndex = 0;
         canvas.addEventListener('wheel', event => {
