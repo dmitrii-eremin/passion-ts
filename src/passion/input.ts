@@ -33,6 +33,10 @@ export class Input implements IInput, SubSystem {
         this.pressedKeys = {};
         this.releasedKeys = new Set<Key>();
     }
+    
+    onBeforeAll(_dt: number) {
+
+    }
 
     onAfterAll(_dt: number) {
         for (const key in this.pressedKeys) {

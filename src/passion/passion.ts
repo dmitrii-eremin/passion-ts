@@ -19,6 +19,14 @@ export class Passion {
         this.data.canvas = canvas;
         this.data.context = this.data.canvas.getContext('2d');
 
+        const onBeforeAll = (dt: number) => {
+            this.data.system?.onBeforeAll(dt);
+            this.data.resource?.onBeforeAll(dt);
+            this.data.graphics?.onBeforeAll(dt);
+            this.data.input?.onBeforeAll(dt);
+            this.data.math?.onBeforeAll(dt);
+        };
+
         const onAfterAll = (dt: number) => {
             this.data.system?.onAfterAll(dt);
             this.data.resource?.onAfterAll(dt);
@@ -27,7 +35,7 @@ export class Passion {
             this.data.math?.onAfterAll(dt);
         };
 
-        this.data.system = new System(this.data, onAfterAll);
+        this.data.system = new System(this.data, onBeforeAll, onAfterAll);
         this.data.resource = new Resource(this.data);
         this.data.graphics = new Graphics(this.data);
         this.data.input = new Input(this.data);

@@ -17,6 +17,6 @@ export class Resource implements IResource, SubSystem {
       this.data.images[img].load(0, 0, path);
     }
 
-    onAfterAll(_dt: number) {
-    }
+    onBeforeAll(_dt: number) {}
+    onAfterAll(_dt: number) {}
 }

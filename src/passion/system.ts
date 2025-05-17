@@ -12,18 +12,23 @@ export interface ISystem {
     run(update: UpdateCallback, draw: DrawCallback): void;
 }
 
+export type OnBeforeAllCallback = (dt: number) => void;
 export type OnAfterAllCallback = (dt: number) => void;
 
 export class System implements ISystem, SubSystem {
     private data: PassionData;
+    private onBeforeAllCallback?: OnBeforeAllCallback;
     private onAfterAllCallback?: OnAfterAllCallback;
     private fpsCounter: FrameCounter;
 
-    constructor(data: PassionData, onAfterAllCallback?: OnAfterAllCallback) {
+    constructor(data: PassionData, onBeforeAllCallback?: OnBeforeAllCallback, onAfterAllCallback?: OnAfterAllCallback) {
         this.data = data;
         this.fpsCounter = new FrameCounter();
+        this.onBeforeAllCallback = onBeforeAllCallback;
         this.onAfterAllCallback = onAfterAllCallback;
     }
+
+    onBeforeAll(_dt: number) {}
 
     onAfterAll(dt: number) {
         this.fpsCounter.update(dt);
@@ -53,6 +58,10 @@ export class System implements ISystem, SubSystem {
         const gameLoop = (now: number) => {
             const dt = (now - lastTime) / 1000;
             lastTime = now;
+
+            if (this.onBeforeAllCallback) {
+                this.onBeforeAllCallback(dt);
+            }
 
             update(dt);
             draw();
