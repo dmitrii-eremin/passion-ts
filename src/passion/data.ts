@@ -12,6 +12,8 @@ export class PassionData {
 
     public images: PassionImage[] = Array.from({ length: MAX_IMAGE_COUNT }, () => new PassionImage());
 
+    displayScale: number = 1;
+
     system?: System;
     resource?: Resource;
     graphics?: Graphics;

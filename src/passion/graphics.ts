@@ -42,9 +42,6 @@ export class Graphics implements IGraphics, SubSystem {
     private bdfFont: BdfFont;
     private palette: Palette = new Palette();
 
-    private camX: number = 0;
-    private camY: number = 0;
-
     constructor(data: PassionData) {
         this.data = data;
         this.bdfFont = new BdfFont(DefaultBdfFont);
@@ -65,7 +62,8 @@ export class Graphics implements IGraphics, SubSystem {
         if (x === undefined) x = 0;
         if (y === undefined) y = 0;
 
-        this.data.context!.setTransform(1, 0, 0, 1, -x, -y);
+        const scale = this.data.displayScale;
+        this.data.context!.setTransform(scale, 0, 0, scale, -x * scale, -y * scale);
     }
 
     cls(col: Color) {
