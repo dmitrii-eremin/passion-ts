@@ -1,13 +1,18 @@
+import type { ImageIndex } from './passion/constants';
 import type { Passion } from './passion/passion';
 import { Animation, AnimationGrid } from './passion/stdlib/animation';
+import { World } from './passion/stdlib/bump';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 class Ninja {
     private passion: Passion;
+    private world: World;
     private spriteId: number;
     public x: number;
     public y: number;
+    private w = 16;
+    private h = 16;
     private speed: number = 100;
     private direction: Direction = 'down';
 
@@ -18,12 +23,16 @@ class Ninja {
 
     private grid: AnimationGrid;
 
-    constructor(passion: Passion, x: number, y: number) {
+    constructor(passion: Passion, world: World, x: number, y: number) {
         this.passion = passion;
+        this.world = world;
         this.x = x;
         this.y = y;
+
+        this.world.add(this, this.x, this.y, this.w, this.h);
+
         this.spriteId = this.passion.resource.loadImage('./ninja.png');
-        this.grid = new AnimationGrid(16, 16);
+        this.grid = new AnimationGrid(this.w, this.h);
 
         this.animationDown = new Animation(this.grid.range('1', '1-4'), 0.1);
         this.animationUp = new Animation(this.grid.range('2', '1-4'), 0.1);
@@ -97,36 +106,74 @@ class Ninja {
         this.controlNinja(dt);
 
         this.passion.graphics.camera(
-            Math.ceil(this.x - this.passion.system.width / 2 + 8),
-            Math.ceil(this.y - this.passion.system.height / 2 + 8),
+            Math.ceil(this.x - this.passion.system.width / 2 + this.w / 2),
+            Math.ceil(this.y - this.passion.system.height / 2 + this.h / 2),
         )
     }
 
     draw() {
+        this.passion.graphics.text(Math.ceil(this.x) - 4, Math.ceil(this.y) - 8, 'Mitta', 7);
         this.animation.draw(this.passion, Math.ceil(this.x), Math.ceil(this.y), this.spriteId);
     }
 
     move(dx: number, dy: number, dt: number) {
-        this.x += dx * this.speed * dt;
-        this.y += dy * this.speed * dt;
+        const newX = this.x + dx * this.speed * dt;
+        const newY = this.y + dy * this.speed * dt;
+
+        // const res = this.world.moveWithCollisions(this, newX, newY, 'slide');
+
+        // this.x = res.x;
+        // this.y = res.y;
+        this.x = newX;
+        this.y = newY;
+    }
+}
+
+class Kitty {
+    private passion: Passion;
+    private world: World;
+    private kittyId: ImageIndex;
+    private x: number;
+    private y: number;
+    private w = 16;
+    private h = 16;
+
+    constructor(passion: Passion, world: World, kittyId: ImageIndex, x: number, y: number) {
+        this.passion = passion;
+        this.world = world;
+        this.kittyId = kittyId;
+        this.x = x;
+        this.y = y;
+
+        this.world.add(this, this.x, this.y, this.w, this.h);
+    }
+
+    update(_dt: number) {
+        
+    }
+
+    draw() {
+        this.passion.graphics.blt(this.x, this.y, this.kittyId, 0, 0, this.w, this.h);
     }
 }
 
 export class Game {
     private passion: Passion;
+    private world: World;
 
     private ninja: Ninja;
+    private kitties: Kitty[] = [];
 
-    posX: number[] = [];
-    posY: number[] = [];
-    posW: number[] = [];
+    private drawCollisions = true;
 
     constructor(passion: Passion) {
         this.passion = passion;
-        this.ninja = new Ninja(passion, 150, 100);
+        this.world = new World();
+
+        this.ninja = new Ninja(passion, this.world, 150, 100);
 
         this.passion.system.init(240, 180, 'A demo game');
-        this.passion.resource.loadImage('./cat_16x16.png');
+        const kittyId = this.passion.resource.loadImage('./cat_16x16.png');
 
         this.passion.resource.loadSound('./Jump1.wav');
         const soundId = this.passion.resource.loadSound('./Step1.wav');
@@ -135,24 +182,38 @@ export class Game {
         this.passion.audio.speed(1, 3);
 
         for (let i = 0; i < 25; i++) {
-            this.posX.push(Math.floor(Math.random() * 400) - 100);
-            this.posY.push(Math.floor(Math.random() * 400) - 100);
-            this.posW.push(Math.random() < 0.5 ? 16 : -16);
+            this.kitties.push(new Kitty(this.passion, this.world, kittyId, Math.floor(Math.random() * 400) - 100, Math.floor(Math.random() * 400) - 100));
         }
     }
 
     update(dt: number) {
+        if (this.passion.input.btnp('KeyC')) {
+            this.drawCollisions = !this.drawCollisions;
+        }
+
         this.ninja.update(dt);
     }
 
     draw() {
         this.passion.graphics.cls(1);
 
-        for (let i = 0; i < 25; i++) {
-            this.passion.graphics.blt(this.posX[i], this.posY[i], 1, 0, 0, this.posW[i], 16);
+        for (let kitty of this.kitties) {
+            kitty.draw();
         }
-
         this.ninja.draw();
+
+        if (this.drawCollisions) {
+            let rect = this.world.getRect(this.ninja);
+            if (rect) {
+                this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
+            }
+            for (const kitty of this.kitties) {
+                let rect = this.world.getRect(kitty);
+                if (rect) {
+                    this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
+                }
+            }
+        }
 
         this.passion.graphics.camera();
 
