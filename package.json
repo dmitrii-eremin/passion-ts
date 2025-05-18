@@ -1,6 +1,6 @@
 {
   "name": "passion-engine",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A modern, lightweight browser game engine for TypeScript, inspired by Pyxel.",
   "author": "Dmitrii Eremin <erem.dmitrii@gmail.com>",
   "license": "MIT",
@@ -20,7 +20,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:engine": "tsc -p tsconfig.engine.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "true"
   },
   "devDependencies": {
     "typescript": "~5.8.3",
