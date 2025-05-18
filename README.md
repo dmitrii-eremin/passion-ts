@@ -40,8 +40,8 @@ const passion = new Passion(canvas);
 passion.system.init(240, 180, 'My Passion Game', 3);
 
 // Load resources
-passion.resource.loadImage(0, './cat_16x16.png');
-passion.resource.loadSound(0, './Jump1.wav');
+const imageIndex = passion.resource.loadImage('./cat_16x16.png');
+const soundIndex = passion.resource.loadSound('./Jump1.wav');
 
 // Main update and draw functions
 function update(dt: number) {
@@ -51,7 +51,7 @@ function update(dt: number) {
 function draw() {
   passion.graphics.cls(0); // Clear screen with color 0
   passion.graphics.text(10, 10, 'Hello, Passion!', 7);
-  passion.graphics.blt(50, 50, 0, 0, 0, 16, 16); // Draw image 0
+  passion.graphics.blt(50, 50, imageIndex, 0, 0, 16, 16); // Draw image
 }
 
 // Start the game loop
@@ -129,17 +129,17 @@ interface ISystem {
 ```ts
 interface IResource {
   /**
-   * Load an image resource.
-   * @param img Image index to assign the loaded image to.
+   * Load an image resource and return its index.
    * @param path Path or URL to the image file.
+   * @returns ImageIndex assigned to the loaded image.
    */
-  loadImage(img: ImageIndex, path: string): void;
+  loadImage(path: string): ImageIndex;
   /**
-   * Load a sound resource.
-   * @param snd Sound index to assign the loaded sound to.
+   * Load a sound resource and return its index.
    * @param path Path or URL to the sound file.
+   * @returns SoundIndex assigned to the loaded sound.
    */
-  loadSound(snd: SoundIndex, path: string): void;
+  loadSound(path: string): SoundIndex;
 }
 ```
 
