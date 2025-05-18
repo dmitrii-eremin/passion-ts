@@ -12,6 +12,7 @@ At its core, Passion is built around a set of focused subsystems:
 - **Input**: Provides unified keyboard and mouse input, including key/button state tracking, repeat/hold logic, and mouse wheel support.
 - **Math**: Supplies utility functions for random numbers, Perlin noise, and common math operations, all tailored for game development.
 - **Audio**: Enables playback and control of sound effects, including speed and volume adjustments.
+- **Animation**: Provides tools for creating and managing animations, including grid-based animations and frame rectangles.
 
 Passion is designed for rapid prototyping and educational use, with a focus on clarity, hackability, and fun. The engine is fully written in TypeScript, making it type-safe and easy to extend. All rendering is done on a single HTMLCanvasElement, and the engine is dependency-free, running in any modern browser.
 
@@ -91,6 +92,7 @@ new Passion(canvas: HTMLCanvasElement)
 - `input: IInput`
 - `math: IMath`
 - `audio: IAudio`
+- `animation: Animation`
 
 ---
 
@@ -189,7 +191,7 @@ interface IGraphics {
   /**
    * Draw a filled rectangle.
    * @param x X coordinate of the top-left corner.
-   * @param y Y coordinate of the top-left corner.
+   * @param y X coordinate of the top-left corner.
    * @param w Width of the rectangle.
    * @param h Height of the rectangle.
    * @param col Color index to fill.
@@ -198,7 +200,7 @@ interface IGraphics {
   /**
    * Draw a rectangle border.
    * @param x X coordinate of the top-left corner.
-   * @param y Y coordinate of the top-left corner.
+   * @param y X coordinate of the top-left corner.
    * @param w Width of the rectangle.
    * @param h Height of the rectangle.
    * @param col Color index of the border.
@@ -457,6 +459,90 @@ interface IAudio {
 
 ---
 
+## Animation
+
+```ts
+class Animation {
+  constructor(frames: AnimationFrameRect[], frameDuration: number, loop?: boolean)
+
+  play(): void
+  pause(): void
+  rewind(): void
+  gotoFrame(frameIndex: number): void
+  update(dt: number): void
+  getFrame(): number[]
+  isPlaying(): boolean
+  getFrameIndex(): number
+}
+```
+
+---
+
+## AnimationGrid
+
+```ts
+class AnimationGrid {
+  constructor(frameWidth: number, frameHeight: number, offsetX?: number, offsetY?: number, spacingX?: number, spacingY?: number)
+
+  range(cols: string, rows: string|number): number[][]
+  getFrameRect(col: number, row: number): AnimationFrameRect
+}
+```
+
+---
+
+## AnimationFrameRect
+
+```ts
+interface AnimationFrameRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+```
+
+---
+
+## Animation Example
+
+Here's how to use Animation and AnimationGrid to animate a sprite sheet:
+
+```ts
+import { Animation, AnimationGrid } from './passion/stdlib/animation';
+
+// Create a grid for a sprite sheet with 16x16 frames
+const grid = new AnimationGrid(16, 16);
+
+// Create an animation for frames 1-8 in row 1, with 0.1s per frame
+const walkAnim = Animation.fromGrid(grid, '1-8', 1, 0.1);
+
+function update(dt: number) {
+  walkAnim.update(dt);
+}
+
+function draw() {
+  // Get the current frame's [col, row]
+  const [col, row] = walkAnim.getFrame();
+  // Convert to pixel coordinates
+  const rect = grid.getFrameRect(col, row);
+  // Draw the frame (using your graphics API)
+  passion.graphics.blt(50, 50, imageIndex, rect.x, rect.y, rect.width, rect.height);
+}
+```
+
+or even like this:
+```ts
+this.spriteId = this.passion.resource.loadImage('./ninja.png');
+this.grid = new AnimationGrid(16, 16);
+this.animation = new Animation(this.grid.range('1', '1-4'), 0.1);
+this.animation.draw(this.passion, this.x, this.y, this.spriteId);
+```
+
+You can use `play()`, `pause()`, `rewind()`, and other methods to control the animation. The grid and animation system makes it easy to manage sprite sheet animations in your game.
+
+---
+
 ## Types
 
 - `Color`: 0–15 (palette index)
@@ -465,7 +551,7 @@ interface IAudio {
 
 ---
 
-This API allows you to control the game loop, draw graphics, handle input, manage resources, perform math operations, and play audio. Let me know if you want a more detailed description of any subsystem or method!
+This API allows you to control the game loop, draw graphics, handle input, manage resources, perform math operations, play audio, and manage animations. Let me know if you want a more detailed description of any subsystem or method!
 
 ## License
 MIT
