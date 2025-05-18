@@ -1,13 +1,11 @@
 import type { ImageIndex } from './passion/constants';
 import type { Passion } from './passion/passion';
 import { Animation, AnimationGrid } from './passion/stdlib/animation';
-import { World } from './passion/stdlib/bump';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 class Ninja {
     private passion: Passion;
-    private world: World;
     private spriteId: number;
     public x: number;
     public y: number;
@@ -23,13 +21,10 @@ class Ninja {
 
     private grid: AnimationGrid;
 
-    constructor(passion: Passion, world: World, x: number, y: number) {
+    constructor(passion: Passion, x: number, y: number) {
         this.passion = passion;
-        this.world = world;
         this.x = x;
         this.y = y;
-
-        this.world.add(this, this.x, this.y, this.w, this.h);
 
         this.spriteId = this.passion.resource.loadImage('./ninja.png');
         this.grid = new AnimationGrid(this.w, this.h);
@@ -120,10 +115,6 @@ class Ninja {
         const newX = this.x + dx * this.speed * dt;
         const newY = this.y + dy * this.speed * dt;
 
-        // const res = this.world.moveWithCollisions(this, newX, newY, 'slide');
-
-        // this.x = res.x;
-        // this.y = res.y;
         this.x = newX;
         this.y = newY;
     }
@@ -131,21 +122,17 @@ class Ninja {
 
 class Kitty {
     private passion: Passion;
-    private world: World;
     private kittyId: ImageIndex;
     private x: number;
     private y: number;
     private w = 16;
     private h = 16;
 
-    constructor(passion: Passion, world: World, kittyId: ImageIndex, x: number, y: number) {
+    constructor(passion: Passion, kittyId: ImageIndex, x: number, y: number) {
         this.passion = passion;
-        this.world = world;
         this.kittyId = kittyId;
         this.x = x;
         this.y = y;
-
-        this.world.add(this, this.x, this.y, this.w, this.h);
     }
 
     update(_dt: number) {
@@ -159,18 +146,16 @@ class Kitty {
 
 export class Game {
     private passion: Passion;
-    private world: World;
 
     private ninja: Ninja;
     private kitties: Kitty[] = [];
 
-    private drawCollisions = true;
+    private drawCollisions = false;
 
     constructor(passion: Passion) {
         this.passion = passion;
-        this.world = new World();
 
-        this.ninja = new Ninja(passion, this.world, 150, 100);
+        this.ninja = new Ninja(passion, 50, 50);
 
         this.passion.system.init(240, 180, 'A demo game');
         const kittyId = this.passion.resource.loadImage('./cat_16x16.png');
@@ -182,7 +167,10 @@ export class Game {
         this.passion.audio.speed(1, 3);
 
         for (let i = 0; i < 25; i++) {
-            this.kitties.push(new Kitty(this.passion, this.world, kittyId, Math.floor(Math.random() * 400) - 100, Math.floor(Math.random() * 400) - 100));
+            this.kitties.push(new Kitty(this.passion, kittyId,
+                Math.floor(Math.random() * 400) - 200,
+                Math.floor(Math.random() * 400) - 200)
+            );
         }
     }
 
@@ -202,18 +190,18 @@ export class Game {
         }
         this.ninja.draw();
 
-        if (this.drawCollisions) {
-            let rect = this.world.getRect(this.ninja);
-            if (rect) {
-                this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
-            }
-            for (const kitty of this.kitties) {
-                let rect = this.world.getRect(kitty);
-                if (rect) {
-                    this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
-                }
-            }
-        }
+        // if (this.drawCollisions) {
+        //     let rect = this.world.getRect(this.ninja);
+        //     if (rect) {
+        //         this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
+        //     }
+        //     for (const kitty of this.kitties) {
+        //         let rect = this.world.getRect(kitty);
+        //         if (rect) {
+        //             this.passion.graphics.rectb(rect?.x, rect?.y, rect?.w, rect?.h, 3);
+        //         }
+        //     }
+        // }
 
         this.passion.graphics.camera();
 
