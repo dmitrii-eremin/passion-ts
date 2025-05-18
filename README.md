@@ -2,7 +2,7 @@
 **Passion** is a modern, lightweight browser game engine for TypeScript, inspired by [Pyxel](https://github.com/kitao/pyxel) but designed from the ground up for web development. Passion provides a clean, modular API that makes it easy to build retro-style 2D games with minimal setup and maximum control.
 
 ```bash
-npm install passion-engine
+npm install @dmitrii-eremin/passion-engine
 ```
 
 At its core, Passion is built around a set of focused subsystems:

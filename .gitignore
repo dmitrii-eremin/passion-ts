@@ -35,3 +35,4 @@ coverage/
 *.local
 *.sublime-workspace
 *.sublime-project
+.npmrc
