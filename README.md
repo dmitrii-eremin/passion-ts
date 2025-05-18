@@ -13,7 +13,11 @@ At its core, Passion is built around a set of focused subsystems:
 - **Input**: Provides unified keyboard and mouse input, including key/button state tracking, repeat/hold logic, and mouse wheel support.
 - **Math**: Supplies utility functions for random numbers, Perlin noise, and common math operations, all tailored for game development.
 - **Audio**: Enables playback and control of sound effects, including speed and volume adjustments.
+
+### StdLib
+The **StdLib** is a collection of simple, reusable helpers that extend the core engine, making it easier and faster to develop games. It includes utilities for common tasks such as animation, grid management, and other gameplay patterns, allowing you to focus on building your game logic without reinventing the wheel.
 - **Animation**: Provides tools for creating and managing animations, including grid-based animations and frame rectangles.
+- **Collision**: Integrates the bump collision detection library, providing simple and efficient AABB collision handling for grid-based and platformer games.
 
 Passion is designed for rapid prototyping and educational use, with a focus on clarity, hackability, and fun. The engine is fully written in TypeScript, making it type-safe and easy to extend. All rendering is done on a single HTMLCanvasElement, and the engine is dependency-free, running in any modern browser.
 
