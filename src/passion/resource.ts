@@ -1,4 +1,4 @@
-import type { ImageIndex, SoundIndex } from '../constants';
+import type { ImageIndex, SoundIndex } from './constants';
 import type { PassionData } from './data';
 import type { SubSystem } from './subsystem';
 

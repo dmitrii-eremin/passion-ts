@@ -5,7 +5,7 @@ import { Resource } from './resource';
 import { Audio } from './audio';
 import { PassionMath } from './math';
 import { PassionImage } from './image';
-import { MAX_IMAGE_COUNT, MAX_SOUND_COUNT } from '../constants';
+import { MAX_IMAGE_COUNT, MAX_SOUND_COUNT } from './constants';
 import { Sound } from './sound';
 
 export class PassionData {
