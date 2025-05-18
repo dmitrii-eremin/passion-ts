@@ -1,4 +1,4 @@
-import type { ImageIndex } from "../constants";
+import type { ImageIndex } from "./constants";
 import { type Color } from "./color";
 import type { PassionData } from "./data";
 import { PassionImage } from "./image";
