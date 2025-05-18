@@ -2,30 +2,12 @@ export class PassionImage {
     private data: HTMLImageElement;
     private isReady: boolean = false;
 
-    constructor() {
-        this.data = new Image(256, 256);
-        this.data.onload = _event => {
+    constructor(path: string) {
+        this.data = new Image();
+        this.data.src = path;
+        this.data.onload = () => {
             this.isReady = true;
         };
-    }
-
-    load(x: number, y: number, path: string) {
-        this.isReady = false;
-        const img = new Image();
-        img.onload = () => {
-            const offCanvas = document.createElement('canvas');
-            offCanvas.width = this.data.width;
-            offCanvas.height = this.data.height;
-            const offCtx = offCanvas.getContext('2d')!;
-            
-            offCtx.clearRect(0, 0, offCanvas.width, offCanvas.height);
-            offCtx.drawImage(this.data, 0, 0);
-            offCtx.drawImage(img, x, y);
-
-            this.data.src = offCanvas.toDataURL();
-            this.isReady = true;
-        };
-        img.src = path;
     }
 
     blt(

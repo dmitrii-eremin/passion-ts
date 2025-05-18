@@ -3,7 +3,7 @@ export class Sound {
 
     private audio?: HTMLAudioElement;
 
-    load(path: string) {
+    constructor(path: string) {
         this.isReady = false;
 
         this.audio = new Audio(path);

@@ -1,10 +1,12 @@
 import type { ImageIndex, SoundIndex } from './constants';
 import type { PassionData } from './data';
+import { PassionImage } from './image';
+import { Sound } from './sound';
 import type { SubSystem } from './subsystem';
 
 export interface IResource {
-  loadImage(img: ImageIndex, path: string): void;
-  loadSound(snd: SoundIndex, path: string): void;
+  loadImage(path: string): ImageIndex;
+  loadSound(path: string): SoundIndex;
 }
 
 export class Resource implements IResource, SubSystem {
@@ -14,12 +16,16 @@ export class Resource implements IResource, SubSystem {
       this.data = data;
     }
 
-    loadImage(img: ImageIndex, path: string) {
-      this.data.images[img].load(0, 0, path);
+    loadImage(path: string): ImageIndex {
+      const image = new PassionImage(path);
+      this.data.images.push(image);
+      return this.data.images.length - 1 as ImageIndex;
     }
 
-    loadSound(snd: SoundIndex, path: string) {
-      this.data.sounds[snd].load(path);
+    loadSound(path: string): SoundIndex {
+      const sound = new Sound(path);
+      this.data.sounds.push(sound);
+      return this.data.sounds.length - 1 as SoundIndex;
     }
 
     onBeforeAll(_dt: number) {}

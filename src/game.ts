@@ -52,10 +52,10 @@ export class Game {
         this.player = new Player(passion, 120, 90);
 
         this.passion.system.init(240, 180, 'A demo game');
-        this.passion.resource.loadImage(0, './cat_16x16.png');
+        this.passion.resource.loadImage('./cat_16x16.png');
 
-        this.passion.resource.loadSound(0, './Jump1.wav');
-        this.passion.resource.loadSound(1, './Step1.wav');
+        this.passion.resource.loadSound('./Jump1.wav');
+        this.passion.resource.loadSound('./Step1.wav');
 
         this.passion.audio.speed(1, 3);
 
