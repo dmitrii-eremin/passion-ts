@@ -1,4 +1,4 @@
-import type { Color } from "../color";
+import type { Color } from "../constants";
 import type { ImageIndex } from "../constants";
 import type { Passion } from "../passion";
 
