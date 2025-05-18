@@ -1,5 +1,5 @@
 import type { ImageIndex } from "./constants";
-import { type Color } from "./color";
+import { type Color } from "./constants";
 import type { PassionData } from "./data";
 import { PassionImage } from "./image";
 import { BdfFont } from "./internal/bdf_font";
