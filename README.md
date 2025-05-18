@@ -1,6 +1,10 @@
 # Passion
 **Passion** is a modern, lightweight browser game engine for TypeScript, inspired by [Pyxel](https://github.com/kitao/pyxel) but designed from the ground up for web development. Passion provides a clean, modular API that makes it easy to build retro-style 2D games with minimal setup and maximum control.
 
+```bash
+npm install passion-engine
+```
+
 At its core, Passion is built around a set of focused subsystems:
 - **System**: Manages the game loop, timing, and canvas scaling, providing a smooth and consistent frame rate.
 - **Graphics**: Offers a pixel-perfect 2D renderer with palette-based color, camera support, and a suite of drawing primitives (lines, rectangles, circles, ellipses, triangles, flood fill, and text rendering using a built-in bitmap font). It supports image blitting with flipping, scaling, rotation, and color key transparency.
@@ -65,7 +69,6 @@ This will display a window, clear the screen, draw some text, and blit an image.
 ## Inspiration
 Built with inspiration from Pyxel, but tailored for TypeScript developers.
 
-## API
 # Passion Game Engine Public API
 
 The main entry point is the `Passion` class, which exposes several subsystems for game development:
