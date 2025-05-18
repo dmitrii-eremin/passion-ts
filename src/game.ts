@@ -109,12 +109,6 @@ class Ninja {
     move(dx: number, dy: number, dt: number) {
         this.x += dx * this.speed * dt;
         this.y += dy * this.speed * dt;
-        if (dx < 0) {
-            this.lastdx = -1;
-        }
-        else if (dx > 0) {
-            this.lastdx = 1;
-        }
     }
 }
 
@@ -135,7 +129,8 @@ export class Game {
         this.passion.resource.loadImage('./cat_16x16.png');
 
         this.passion.resource.loadSound('./Jump1.wav');
-        this.passion.resource.loadSound('./Step1.wav');
+        const soundId = this.passion.resource.loadSound('./Step1.wav');
+        this.passion.audio.volume(soundId, 0.3);
 
         this.passion.audio.speed(1, 3);
 

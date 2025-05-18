@@ -136,12 +136,27 @@ interface IResource {
    * @returns ImageIndex assigned to the loaded image.
    */
   loadImage(path: string): ImageIndex;
+
   /**
    * Load a sound resource and return its index.
    * @param path Path or URL to the sound file.
    * @returns SoundIndex assigned to the loaded sound.
    */
   loadSound(path: string): SoundIndex;
+
+  /**
+   * Retrieves the index information for an image resource based on its file path.
+   * @param path - The file path of the image.
+   * @returns The corresponding ImageIndex if found; otherwise, undefined.
+   */
+  getImageIndex(path: string): ImageIndex | undefined;
+
+  /**
+   * Retrieves the index information for a sound resource based on its file path.
+   * @param path - The file path of the sound.
+   * @returns The corresponding SoundIndex if found; otherwise, undefined.
+   */
+  getSoundIndex(path: string): SoundIndex | undefined;
 }
 ```
 
@@ -466,6 +481,7 @@ class Animation {
   constructor(frames: AnimationFrameRect[], frameDuration: number, loop?: boolean)
 
   play(): void
+  pause(): void
   pause(): void
   rewind(): void
   gotoFrame(frameIndex: number): void
