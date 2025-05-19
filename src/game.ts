@@ -1,4 +1,5 @@
-import type { ImageIndex } from './passion/constants';
+import type { ImageIndex, WebSocketIndex } from './passion/constants';
+import type { SocketResponseType } from './passion/network';
 import type { Passion } from './passion/passion';
 import { Animation, AnimationGrid } from './passion/stdlib/animation';
 import Bump, { World } from './passion/stdlib/bump/index';
@@ -191,16 +192,16 @@ export class Game {
 
     private ninja: Ninja;
     private kitties: Kitty[] = [];
+    private socket: WebSocketIndex;
 
     private drawCollisions = false;
 
     constructor(passion: Passion) {
         this.passion = passion;
         this.world = Bump.newWorld(16);
+        this.passion.system.init(240, 180, 'A demo game');
 
         this.ninja = new Ninja(passion, this.world, 50, 50);
-
-        this.passion.system.init(240, 180, 'A demo game');
         const kittyId = this.passion.resource.loadImage('./cat_16x16.png');
 
         this.passion.resource.loadSound('./Jump1.wav');
@@ -216,6 +217,11 @@ export class Game {
                 Math.floor(Math.random() * 400) - 200)
             );
         }
+
+        this.socket = this.passion.network.connect('ws://localhost:8080',
+            (idx: WebSocketIndex, responseType: SocketResponseType, data?: any) => {
+            console.log('socket event: ', idx, responseType, data);
+        });
     }
 
     update(dt: number) {

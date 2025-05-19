@@ -6,6 +6,9 @@ import { Audio } from './audio';
 import { PassionMath } from './math';
 import { PassionImage } from './image';
 import { Sound } from './sound';
+import { Network } from './network';
+
+import { WSClient } from './internal/ws_client';
 
 export class PassionData {
     public canvas: HTMLCanvasElement | null = null;
@@ -13,6 +16,7 @@ export class PassionData {
 
     public images: PassionImage[] = [];
     public sounds: Sound[] = [];
+    public sockets: WSClient[] = [];
 
     displayScale: number = 1;
 
@@ -22,6 +26,7 @@ export class PassionData {
     input?: Input;
     math?: PassionMath;
     audio?: Audio;
+    network?: Network;
 
     isReady(): boolean {
         return this.canvas !== null && this.context !== null;

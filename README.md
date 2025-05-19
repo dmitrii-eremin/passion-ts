@@ -97,7 +97,7 @@ new Passion(canvas: HTMLCanvasElement)
 - `input: IInput`
 - `math: IMath`
 - `audio: IAudio`
-- `animation: Animation`
+- `network: INetwork`
 
 ---
 
@@ -311,6 +311,16 @@ interface IGraphics {
    * @param scale (Optional) Scale factor.
    */
   blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void;
+  /**
+   * Change the color palette or restore the default palette if no parameter is given.
+   * @param pal (Optional) Array of color values to set as the new palette. No parameter restores the default palette.
+   */
+  pal(pal?: number[]): void;
+  /**
+   * Change the font used for text rendering. Supports any BDF font format.
+   * @param font (Optional) The BdfFont object to use. No parameter restores the default font.
+   */
+  font(font?: BdfFont): void;
 }
 ```
 
@@ -476,6 +486,43 @@ interface IAudio {
   volume(snd: SoundIndex, volume: number): void;
 }
 ```
+
+---
+
+## INetwork
+
+```ts
+export type SocketResponseType = 'connected' | 'disconnected' | 'error' | 'message';
+export type OnServerResponse = (socketIndex: WebSocketIndex, responseType: SocketResponseType, data?: any) => void;
+
+interface INetwork {
+  /**
+   * Connect to a WebSocket server and register a callback for all events.
+   * @param address The WebSocket server address (ws:// or wss://).
+   * @param responseCallback Callback for connection, disconnection, error, and message events.
+   * @returns WebSocketIndex assigned to the connection.
+   */
+  connect(address: string, responseCallback: OnServerResponse): WebSocketIndex;
+
+  /**
+   * Close a WebSocket connection by its index.
+   * @param socket The WebSocketIndex to close.
+   */
+  close(socket: WebSocketIndex): void;
+
+  /**
+   * Send a message to the server via the specified socket.
+   * @param socket The WebSocketIndex to use.
+   * @param data The data to send (string or object, will be stringified if object).
+   * @returns True if sent successfully, false otherwise.
+   */
+  send(socket: WebSocketIndex, data: string | Object): boolean;
+}
+```
+
+**Events:**
+- The `responseCallback` receives events of type `'connected'`, `'disconnected'`, `'error'`, and `'message'` for each socket.
+- The `data` parameter contains the message or error details as appropriate.
 
 ---
 
