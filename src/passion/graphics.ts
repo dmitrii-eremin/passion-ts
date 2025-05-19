@@ -12,6 +12,8 @@ export interface IGraphics {
 
     camera(x?: number, y?: number): void;
 
+    pal(colors?: string[]): void;
+
     cls(col: Color): void;
 
     pget(x: number, y: number): Color;
@@ -64,6 +66,10 @@ export class Graphics implements IGraphics, SubSystem {
 
         const scale = this.data.displayScale;
         this.data.context!.setTransform(scale, 0, 0, scale, -x * scale, -y * scale);
+    }
+
+    pal(colors?: string[]) {
+        this.palette = new Palette(colors);
     }
 
     cls(col: Color) {

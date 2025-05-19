@@ -3,6 +3,25 @@ import type { Passion } from './passion/passion';
 import { Animation, AnimationGrid } from './passion/stdlib/animation';
 import Bump, { World } from './passion/stdlib/bump/index';
 
+const otherPalette: string[] = [
+    '#f2c0a2',
+    '#e98472',
+    '#d82323',
+    '#98183c',
+    '#1fcb23',
+    '#126d30',
+    '#26dddd',
+    '#1867a0',
+    '#934226',
+    '#6c251e',
+    '#f7e26c',
+    '#edb329',
+    '#e76d14',
+    '#f2f2f9',
+    '#6a5fa0',
+    '#161423',
+];
+
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 class Ninja {
@@ -114,6 +133,13 @@ class Ninja {
     }
 
     draw() {
+        if (this.passion.input.btn('KeyP')) {
+            this.passion.graphics.pal(otherPalette);
+        }
+        else {
+            this.passion.graphics.pal();
+        }
+
         this.passion.graphics.text(Math.ceil(this.x) - 4, Math.ceil(this.y) - 8, 'Mitta', 7);
         this.animation.draw(this.passion, Math.ceil(this.x), Math.ceil(this.y), this.spriteId);
     }
