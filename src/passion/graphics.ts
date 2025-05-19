@@ -13,6 +13,7 @@ export interface IGraphics {
     camera(x?: number, y?: number): void;
 
     pal(colors?: string[]): void;
+    font(bdfFontData?: string): void;
 
     cls(col: Color): void;
 
@@ -70,6 +71,10 @@ export class Graphics implements IGraphics, SubSystem {
 
     pal(colors?: string[]) {
         this.palette = new Palette(colors);
+    }
+
+    font(bdfFontData?: string) {
+        this.bdfFont = new BdfFont(bdfFontData ?? DefaultBdfFont);
     }
 
     cls(col: Color) {

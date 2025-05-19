@@ -55,6 +55,7 @@ function parseBdf(bdfText: string): BdfFontData {
 
 export type BdfFontRenderCallback = (x: number, y: number) => void;
 
+// More BDF fonts: https://github.com/olikraus/u8g2/tree/master/tools/font/bdf
 export class BdfFont {
     private fontData: BdfFontData;
 
