@@ -2,6 +2,7 @@ import { DefaultColors } from "../color";
 import type { Color } from "../constants";
 import type { PassionImage } from "../image";
 
+// More palettes on https://lospec.com
 export class Palette {
     private colors: string[] = [];
     private revertedColors: Record<string, number> = {};
