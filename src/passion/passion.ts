@@ -5,6 +5,7 @@ import { type IInput, Input } from './input';
 import { type IResource, Resource } from './resource';
 import { type IMath, PassionMath } from './math';
 import { type IAudio, Audio } from './audio';
+import { type INetwork, Network } from './network';
 import type { Key } from './key';
 
 export class Passion {
@@ -16,6 +17,7 @@ export class Passion {
     input: IInput;
     math: IMath;
     audio: IAudio;
+    network: INetwork;
 
     constructor(canvas: HTMLCanvasElement) {
         this.data.canvas = canvas;
@@ -28,6 +30,7 @@ export class Passion {
             this.data.input?.onBeforeAll(dt);
             this.data.math?.onBeforeAll(dt);
             this.data.audio?.onBeforeAll(dt);
+            this.data.network?.onBeforeAll(dt);
         };
 
         const onAfterAll = (dt: number) => {
@@ -37,6 +40,7 @@ export class Passion {
             this.data.input?.onAfterAll(dt);
             this.data.math?.onAfterAll(dt);
             this.data.audio?.onAfterAll(dt);
+            this.data.network?.onAfterAll(dt);
         };
 
         this.data.system = new System(this.data, onBeforeAll, onAfterAll);
@@ -45,6 +49,7 @@ export class Passion {
         this.data.input = new Input(this.data);
         this.data.math = new PassionMath();
         this.data.audio = new Audio(this.data);
+        this.data.network = new Network(this.data);
 
         this.system = this.data.system;
         this.resource = this.data.resource;
@@ -52,6 +57,7 @@ export class Passion {
         this.input = this.data.input;
         this.math = this.data.math;
         this.audio = this.data.audio;
+        this.network = this.data.network;
 
         canvas.tabIndex = 0;
         canvas.addEventListener('wheel', event => {
