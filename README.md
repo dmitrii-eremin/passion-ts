@@ -6,6 +6,11 @@
 npm install @dmitrii-eremin/passion-engine
 ```
 
+## Documentation
+The latest documentation is always available below in this README, or you can browse it online at [https://passion-ts.readthedocs.io/en/latest/](https://passion-ts.readthedocs.io/en/latest/).
+
+
+## Overview
 At its core, Passion is built around a set of focused subsystems:
 - **System**: Manages the game loop, timing, and canvas scaling, providing a smooth and consistent frame rate.
 - **Graphics**: Offers a pixel-perfect 2D renderer with palette-based color (custom colors are also possible), camera support, and a suite of drawing primitives (lines, rectangles, circles, ellipses, triangles, flood fill, and text rendering using a built-in bitmap font). It supports image blitting with flipping, scaling, rotation, and color key transparency.
