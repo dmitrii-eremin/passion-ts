@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 
 export type CommandType = 'login' | 'set_pos' | 'update';
 
