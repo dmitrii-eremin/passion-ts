@@ -1,18 +1,20 @@
 import { MAX_TOUCH_COUNT, type ImageIndex } from "../passion/constants";
 import type { Key } from "../passion/key";
 import type { Passion } from "../passion/passion";
-// import Bump, { World } from '../passion/stdlib/bump/index';
+import { Bump, World } from '../passion/stdlib/bump/index';
 
 export class Game {
     private passion: Passion;
-    // private world: World;
+    private world: World;
 
     private catId: ImageIndex;
 
     constructor(passion: Passion) {
             this.passion = passion;
-            // this.world = Bump.newWorld(16);
+            this.world = Bump.newWorld(16);
             this.passion.system.init(240, 180, 'A demo game');
+
+            this.world.add('dasasxasd', -100, -100, 1, 1);
 
             this.catId = this.passion.resource.loadImage('./cat_16x16.png');
     }
