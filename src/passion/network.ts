@@ -1,5 +1,6 @@
 import type { WebSocketIndex } from './constants';
 import type { PassionData } from './data';
+import { generateUniqueName } from './internal/random_id';
 import { WSClient } from './internal/ws_client';
 import type { SubSystem } from './subsystem';
 
@@ -20,42 +21,38 @@ export class Network implements INetwork, SubSystem {
     }
     
     connect(address: string, responseCallback: OnServerResponse): WebSocketIndex {
-      const socketIndex: WebSocketIndex = this.data.sockets.length;
+      const id = generateUniqueName('ws') as WebSocketIndex;
 
       const socket = new WSClient(address);
-      this.data.sockets.push(socket);
+      this.data.sockets.set(id, socket);
       
       socket.onOpen(() => {
-        responseCallback(socketIndex, 'connected');
+        responseCallback(id, 'connected');
       });
       socket.onClose(() => {
-        responseCallback(socketIndex, 'disconnected');
+        responseCallback(id, 'disconnected');
       });
       socket.onError(err => {
-        responseCallback(socketIndex, 'error', err);
+        responseCallback(id, 'error', err);
       });
       socket.onMessage(data => {
-        responseCallback(socketIndex, 'message', data);
+        responseCallback(id, 'message', data);
       });
-      return socketIndex;
+      return id;
     }
 
     close(socket: WebSocketIndex) {
-      if (socket >= 0 && socket < this.data.sockets.length) {
-        this.data.sockets[socket].close();
-      }
+      this.data.sockets.get(socket)?.close();
+      this.data.sockets.delete(socket);
     }
 
     send(socket: WebSocketIndex, data: string | Object): boolean {
       try {
-      if (socket < 0 || socket >= this.data.sockets.length) {
-        return false;
-      }
-      const payload = typeof data === 'string' ? data : JSON.stringify(data);
-      this.data.sockets[socket].send(payload);
-      return true;
+        const payload = typeof data === 'string' ? data : JSON.stringify(data);
+        this.data.sockets.get(socket)?.send(payload);
+        return true;
       } catch {
-      return false;
+        return false;
       }
     }
 
