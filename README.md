@@ -339,6 +339,11 @@ interface IInput {
   /** Mouse wheel Y movement. */
   readonly mouse_wheel_y: number;
 
+  /** Touch[N] X coordinate. Suppported up to 10 (MAX_TOUCH_COUNT) touches. */
+  readonly touch_x: number[];
+  /** Touch[N] Y coordinate. Suppported up to 10 (MAX_TOUCH_COUNT) touches. */
+  readonly touch_y: number[];
+
   /**
    * Show or hide the mouse cursor.
    * @param visible Whether the mouse should be visible.

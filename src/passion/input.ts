@@ -1,5 +1,8 @@
+import { MAX_TOUCH_COUNT } from './constants';
 import type { PassionData } from './data';
+import { TouchManager } from './internal/touch_manager';
 import type { Key } from './key';
+import { Position } from './stdlib/position';
 import type { SubSystem } from './subsystem';
 
 export interface IInput {
@@ -7,6 +10,9 @@ export interface IInput {
     readonly mouse_y: number;
     readonly mouse_wheel_x: number;
     readonly mouse_wheel_y: number;
+
+    readonly touch_x: number[];
+    readonly touch_y: number[];
 
     mouse(visible: boolean): void;
     btn(key: Key): boolean;
@@ -17,8 +23,7 @@ export interface IInput {
 export class Input implements IInput, SubSystem {
     private data: PassionData;
 
-    private clientMouseX: number = 0;
-    private clientMouseY: number = 0;
+    private touchManager: TouchManager = new TouchManager();
 
     private pressedKeys: Partial<Record<Key, number>>;
     private releasedKeys: Set<Key>;
@@ -27,6 +32,9 @@ export class Input implements IInput, SubSystem {
     public mouse_y: number = 0;
     public mouse_wheel_x: number = 0;
     public mouse_wheel_y: number = 0;
+
+    public touch_x: number[] = new Array(MAX_TOUCH_COUNT).fill(0);
+    public touch_y: number[] = new Array(MAX_TOUCH_COUNT).fill(0);
 
     constructor(data: PassionData) {
         this.data = data;
@@ -132,31 +140,82 @@ export class Input implements IInput, SubSystem {
     }
 
     _setClientMouse(x: number, y: number) {
-        this.clientMouseX = x;
-        this.clientMouseY = y;
-
-        if (!this.data.isReady()) return 0;
-
-        const canvas = this.data.canvas!;
-        const aspectCanvas = canvas.width / canvas.height;
-        const aspectDisplay = canvas.clientWidth / canvas.clientHeight;
-
-        let offsetX = 0, scaleX = canvas.width / canvas.clientWidth;
-        let offsetY = 0, scaleY = canvas.height / canvas.clientHeight;
-
-        if (aspectDisplay > aspectCanvas) {
-            const scaledWidth = canvas.clientHeight * aspectCanvas;
-            offsetX = (canvas.clientWidth - scaledWidth) / 2;
-            scaleX = canvas.width / scaledWidth;
-        }
-
-        if (aspectDisplay < aspectCanvas) {
-            const scaledHeight = canvas.clientWidth / aspectCanvas;
-            offsetY = (canvas.clientHeight - scaledHeight) / 2;
-            scaleY = canvas.height / scaledHeight;
-        }
-
-        this.mouse_x = (this.clientMouseX - offsetX) * scaleX;
-        this.mouse_y = (this.clientMouseY - offsetY) * scaleY;
+        const pos = convertClientCoordsToCanvas(this.data.canvas!, x, y);
+        this.mouse_x = pos.x;
+        this.mouse_y = pos.y;
     }
+
+    _onTouchStarted(event: TouchEvent) {
+        if (!this.data.isReady()) {
+            return;
+        }
+
+        const touches = this.touchManager.onTouchStarted(event);
+        for (const touch of touches) {
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            this.touch_x[touch.touchIndex] = pos.x;
+            this.touch_y[touch.touchIndex] = pos.y;
+
+            const key = convertTouchIdToKey(touch.touchIndex);
+            this._setKeyDown(key);
+        }
+    }
+
+    _onTouchEnded(event: TouchEvent) {
+        if (!this.data.isReady()) {
+            return;
+        }
+        
+        const touches = this.touchManager.onTouchEnded(event);
+        for (const touch of touches) {
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            this.touch_x[touch.touchIndex] = pos.x;
+            this.touch_y[touch.touchIndex] = pos.y;
+
+            const key = convertTouchIdToKey(touch.touchIndex);
+            this._setKeyUp(key);
+        }
+    }
+
+    _onTouchMoved(event: TouchEvent) {
+        if (!this.data.isReady()) {
+            return;
+        }
+        
+        const touches = this.touchManager.onTouchMoved(event);
+        for (const touch of touches) {
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            this.touch_x[touch.touchIndex] = pos.x;
+            this.touch_y[touch.touchIndex] = pos.y;
+        }
+    }
+}
+
+function convertTouchIdToKey(touchId: number): Key {
+    return `Touch${touchId}` as Key;
+}
+
+function convertClientCoordsToCanvas(canvas: HTMLCanvasElement, x: number, y: number): Position {
+    const aspectCanvas = canvas.width / canvas.height;
+    const aspectDisplay = canvas.clientWidth / canvas.clientHeight;
+
+    let offsetX = 0, scaleX = canvas.width / canvas.clientWidth;
+    let offsetY = 0, scaleY = canvas.height / canvas.clientHeight;
+
+    if (aspectDisplay > aspectCanvas) {
+        const scaledWidth = canvas.clientHeight * aspectCanvas;
+        offsetX = (canvas.clientWidth - scaledWidth) / 2;
+        scaleX = canvas.width / scaledWidth;
+    }
+
+    if (aspectDisplay < aspectCanvas) {
+        const scaledHeight = canvas.clientWidth / aspectCanvas;
+        offsetY = (canvas.clientHeight - scaledHeight) / 2;
+        scaleY = canvas.height / scaledHeight;
+    }
+
+    return Position.fromCoords(
+        (x - offsetX) * scaleX,
+        (y - offsetY) * scaleY,
+    );
 }

@@ -95,35 +95,17 @@ export class Passion {
 
         canvas.addEventListener('touchstart', event => {
             canvas.focus();
-            if (event.changedTouches.length === 1) {
-                this.data.touchIdentified = event.changedTouches[0].identifier;
-            }
-
-            for (const touch of event.changedTouches) {
-                if (touch.identifier === this.data.touchIdentified) {
-                    this.data.input?._setMouseDown({ button: 0 } as MouseEvent);
-                }
-            }
+            this.data.input?._onTouchStarted(event);
             event.preventDefault();
         }, { passive: false });
 
         canvas.addEventListener('touchend', event => {
-            for (const touch of event.changedTouches) {
-                if (touch.identifier === this.data.touchIdentified || event.changedTouches.length === 1) {
-                    this.data.input?._setMouseUp({ button: 0 } as MouseEvent);
-                }
-            }
+            this.data.input?._onTouchEnded(event);
             event.preventDefault();
         }, { passive: false });
 
         canvas.addEventListener('touchmove', event => {
-           for (const touch of event.changedTouches) {
-                if (touch.identifier === this.data.touchIdentified) {
-                    const mx = touch.clientX;
-                    const my = touch.clientY;
-                    this.data.input?._setClientMouse(mx, my);
-                }
-            }
+            this.data.input?._onTouchMoved(event);
             event.preventDefault();
         }, { passive: false });
     }
