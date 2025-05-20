@@ -152,7 +152,7 @@ export class Input implements IInput, SubSystem {
 
         const touches = this.touchManager.onTouchStarted(event);
         for (const touch of touches) {
-            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.pos.x, touch.pos.y);
             this.touch_x[touch.touchIndex] = pos.x;
             this.touch_y[touch.touchIndex] = pos.y;
 
@@ -168,7 +168,7 @@ export class Input implements IInput, SubSystem {
         
         const touches = this.touchManager.onTouchEnded(event);
         for (const touch of touches) {
-            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.pos.x, touch.pos.y);
             this.touch_x[touch.touchIndex] = pos.x;
             this.touch_y[touch.touchIndex] = pos.y;
 
@@ -184,7 +184,7 @@ export class Input implements IInput, SubSystem {
         
         const touches = this.touchManager.onTouchMoved(event);
         for (const touch of touches) {
-            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.clientX, touch.clientY);
+            const pos = convertClientCoordsToCanvas(this.data.canvas!, touch.pos.x, touch.pos.y);
             this.touch_x[touch.touchIndex] = pos.x;
             this.touch_y[touch.touchIndex] = pos.y;
         }
