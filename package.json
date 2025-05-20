@@ -25,7 +25,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:engine": "tsc -p tsconfig.engine.json",
-    "run:server": "tsc src/game_server.ts && mkdir -p tmp && mv src/game_server.js tmp/game_server.cjs && node tmp/game_server.cjs",
+    "run:server": "tsc src/game/server.ts && mkdir -p tmp && mv src/game/server.js tmp/server.cjs && node tmp/server.cjs",
     "preview": "vite preview",
     "test": "true",
     "publish_npmjs": "npm publish --access public --registry=https://registry.npmjs.org/",

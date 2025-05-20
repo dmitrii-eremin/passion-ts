@@ -1,6 +1,6 @@
 import './style.css'
 import { Passion } from './passion/passion'
-import { Game } from './game'
+import { Game } from './game/game'
 
 document.addEventListener('DOMContentLoaded', () => {
 

@@ -1,27 +1,27 @@
 import { WebSocketServer } from 'ws';
 
-type CommandType = 'login' | 'set_pos' | 'update';
+export type CommandType = 'login' | 'set_pos' | 'update';
 
-type Command = {
+export type Command = {
     type: CommandType;
 };
 
-type CommandLogin = Command & {
+export type CommandLogin = Command & {
     username: string;
 };
 
-type CommandSetPos = Command & {
+export type CommandSetPos = Command & {
     x: number;
     y: number;
 };
 
-class ObjectData {
+export class ObjectData {
     name: string = '';
     x: number = 0;
     y: number = 0;
 }
 
-type CommandUpdate = Command & {
+export type CommandUpdate = Command & {
     objects: ObjectData[];
 };
 
