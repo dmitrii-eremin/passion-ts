@@ -3,8 +3,7 @@ import { Position } from "../stdlib/position";
 
 export interface TouchInfo {
     touchIndex: number;
-    clientX: number;
-    clientY: number;
+    pos: Position;
 }
 
 export class TouchManager {
@@ -38,8 +37,7 @@ export class TouchManager {
             const index = this.getFreeTouchIndex();
 
             touchIndicies.push({
-                clientX: touchEvent.clientX,
-                clientY: touchEvent.clientY,
+                pos: Position.fromCoords(touchEvent.clientX, touchEvent.clientY),
                 touchIndex: index
             });
 
@@ -63,8 +61,7 @@ export class TouchManager {
             const index = this.touchIdToIndex.get(touchEvent.identifier)!;
 
             touchIndicies.push({
-                clientX: touchEvent.clientX,
-                clientY: touchEvent.clientY,
+                pos: Position.fromCoords(touchEvent.clientX, touchEvent.clientY),
                 touchIndex: index
             });
 
@@ -86,8 +83,7 @@ export class TouchManager {
             const index = this.touchIdToIndex.get(touchEvent.identifier)!;
 
             touchIndicies.push({
-                clientX: touchEvent.clientX,
-                clientY: touchEvent.clientY,
+                pos: Position.fromCoords(touchEvent.clientX, touchEvent.clientY),
                 touchIndex: index
             });
 
