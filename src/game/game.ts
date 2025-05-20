@@ -3,7 +3,7 @@ import type { SocketResponseType } from '../passion/network';
 import type { Passion } from '../passion/passion';
 import { Animation, AnimationGrid } from '../passion/stdlib/animation';
 import Bump, { World } from '../passion/stdlib/bump/index';
-import type { Command, CommandLogin, CommandUpdate } from './server';
+import type { Command, CommandLogin, CommandSetPos, CommandUpdate } from './server';
 
 const otherPalette: string[] = [
     '#f2c0a2',
@@ -41,13 +41,13 @@ class RandomNameGenerator {
         const adj = this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
         const noun = this.nouns[Math.floor(Math.random() * this.nouns.length)];
         const num = Math.floor(Math.random() * 1000);
-        return `${adj}${noun}${num}`;
+        return `${adj} ${noun} ${num}`;
     }
 }
 
 class Ninja {
     private passion: Passion;
-    private world: World;
+    private world?: World;
     public readonly objectId: string = `ninja_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
 
     private spriteId: number;
@@ -66,14 +66,19 @@ class Ninja {
 
     private grid: AnimationGrid;
 
-    constructor(passion: Passion, world: World, name: string, x: number, y: number) {
+    private isMoving: boolean = false;
+    private lastPositionUpdate: number = 0;
+
+    constructor(passion: Passion, world: World | undefined, name: string, x: number, y: number) {
         this.passion = passion;
         this.world = world;
         this.name = name;
         this.x = x;
         this.y = y;
 
-        this.world.add(this.objectId, this.x, this.y, this.w, this.h);
+        if (this.world) {
+            this.world.add(this.objectId, this.x, this.y, this.w, this.h);
+        }
 
         this.spriteId = this.passion.resource.loadImage('./ninja.png');
         this.grid = new AnimationGrid(this.w, this.h);
@@ -84,7 +89,14 @@ class Ninja {
         this.animationRight = new Animation(this.grid.range('4', '1-4'), 0.1);
     }
 
-    private controlNinja(dt: number) {
+    public captureCamera() {
+        this.passion.graphics.camera(
+            Math.ceil(this.x - this.passion.system.width / 2 + this.w / 2),
+            Math.ceil(this.y - this.passion.system.height / 2 + this.h / 2),
+        )
+    }
+
+    public controlNinja(dt: number) {
         let dx = 0
         let dy = 0
 
@@ -145,14 +157,20 @@ class Ninja {
     }
 
     update(dt: number) {
+        if (!this.world) {
+            // network player is here
+            if (this.isMoving) {
+                this.animation.play();
+                if (performance.now() - this.lastPositionUpdate > 100) {
+                    this.isMoving = false;
+                }
+            }
+            else {
+               this.animation.stop();
+            }
+        }
+
         this.animation.update(dt);
-
-        this.controlNinja(dt);
-
-        this.passion.graphics.camera(
-            Math.ceil(this.x - this.passion.system.width / 2 + this.w / 2),
-            Math.ceil(this.y - this.passion.system.height / 2 + this.h / 2),
-        )
     }
 
     draw() {
@@ -171,10 +189,48 @@ class Ninja {
         const newX = this.x + dx * this.speed * dt;
         const newY = this.y + dy * this.speed * dt;
 
-        const resp = this.world.move(this.objectId, newX, newY);
+        const resp = this.world
+            ? this.world.move(this.objectId, newX, newY)
+            : { x: newX, y: newY }; 
+
+        if (Math.abs(resp.x - this.x) > 0 || Math.abs(resp.y - this.y) > 0) {
+            this.isMoving = true;
+            this.passion.network.send(0, {
+                type: 'set_pos',
+                x: resp.x,
+                y: resp.y,
+            } as CommandSetPos);
+        }
 
         this.x = resp.x;
         this.y = resp.y;
+    }
+
+    setTargetPosition(tx: number, ty: number) {
+        // temporary solution
+        this.isMoving = true;
+        if (ty < this.y) {
+            this.direction = 'up';
+        }
+        else if (ty > this.y) {
+            this.direction = 'down';
+        }
+        else if (tx < this.x) {
+            this.direction = 'left';
+        }
+        else if (tx > this.x) {
+            this.direction = 'right';
+        }
+        else {
+            this.isMoving = false;
+        }
+
+        if (this.isMoving) {
+            this.lastPositionUpdate = performance.now();
+        }
+
+        this.x = tx;
+        this.y = ty;
     }
 }
 
@@ -213,8 +269,10 @@ export class Game {
     private world: World;
 
     private ninja: Ninja;
+    private otherPlayers: Ninja[] = [];
+
+    private kittyId: ImageIndex;
     private kitties: Kitty[] = [];
-    private socket: WebSocketIndex;
 
     private drawCollisions = false;
 
@@ -224,7 +282,7 @@ export class Game {
         this.passion.system.init(240, 180, 'A demo game');
 
         this.ninja = new Ninja(passion, this.world, RandomNameGenerator.generate(), 50, 50);
-        const kittyId = this.passion.resource.loadImage('./cat_16x16.png');
+        this.kittyId = this.passion.resource.loadImage('./cat_16x16.png');
 
         this.passion.resource.loadSound('./Jump1.wav');
         const soundId = this.passion.resource.loadSound('./Step1.wav');
@@ -232,29 +290,45 @@ export class Game {
 
         this.passion.audio.speed(1, 3);
 
-        for (let i = 0; i < 25; i++) {
-            this.kitties.push(new Kitty(this.passion, this.world,
-                kittyId,
-                Math.floor(Math.random() * 400) - 200,
-                Math.floor(Math.random() * 400) - 200)
-            );
-        }
-
-        this.socket = this.passion.network.connect('ws://localhost:8080',
-            (idx: WebSocketIndex, responseType: SocketResponseType, data?: Command) => {
+        this.passion.network.connect('ws://localhost:8080',
+            (idx: WebSocketIndex, responseType: SocketResponseType, incomingData?: string) => {
                 if (responseType === 'connected') {
                     this.passion.network.send(idx, {
                         type: 'login',
-                        username: this.ninja.name
+                        username: this.ninja.name,
+                        x: this.ninja.x,
+                        y: this.ninja.y,
                     } as CommandLogin);
                 }
                 else if (responseType === 'disconnected' || responseType === 'error') {
-                    
+
                 }
-                else if (responseType === 'message') {
+                else if (responseType === 'message' && incomingData) {
+                    const data: Command = JSON.parse(incomingData);
+
                     if (data?.type === 'update') {
                         const updateData: CommandUpdate = data! as CommandUpdate;
-                        console.log('data: ', updateData);
+                        
+                        for (const object of updateData.objects) {
+                            const otherPlayer = this.otherPlayers.find(item => item.name === object.name);
+                            if (otherPlayer) {
+                                otherPlayer.setTargetPosition(object.x, object.y);
+                            }
+                            else if (object.name !== this.ninja.name) {
+                                this.otherPlayers.push(new Ninja(this.passion, undefined, object.name, object.x, object.y));
+                            }
+                        }
+
+                        this.otherPlayers = this.otherPlayers.filter(otherPlayer => {
+                            const playerIsFound = updateData.objects.find(obj => obj.name === otherPlayer.name);
+                            return !!playerIsFound;
+                        });
+
+                        if (this.kitties.length === 0) {
+                            for (const kitty of updateData.cats) {
+                                this.kitties.push(new Kitty(this.passion, this.world, this.kittyId, kitty.x, kitty.y));
+                            }
+                        }
                     }
                 }
         });
@@ -265,7 +339,14 @@ export class Game {
             this.drawCollisions = !this.drawCollisions;
         }
 
+        for (const player of this.otherPlayers) {
+            player.update(dt);
+        }
+
+
         this.ninja.update(dt);
+        this.ninja.controlNinja(dt);
+        this.ninja.captureCamera();
     }
 
     draw() {
@@ -273,6 +354,10 @@ export class Game {
 
         for (let kitty of this.kitties) {
             kitty.draw();
+        }
+
+        for (const player of this.otherPlayers) {
+            player.draw();
         }
         this.ninja.draw();
 
