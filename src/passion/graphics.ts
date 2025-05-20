@@ -54,7 +54,7 @@ export class Graphics implements IGraphics, SubSystem {
     onAfterAll(_dt: number) {}
 
     get images(): PassionImage[] {
-        return this.data.images;
+        return Array.from(this.data.images.values());
     }
 
     camera(x?: number, y?: number) {
@@ -343,6 +343,6 @@ export class Graphics implements IGraphics, SubSystem {
         }
 
         const color = colkey ? this.palette.getColor(colkey) : undefined;
-        this.images[img].blt(this.data.context!, x, y, u, v, w, h, color, rotate, scale);
+        this.data.images.get(img)?.blt(this.data.context!, x, y, u, v, w, h, color, rotate, scale);
     }
 }

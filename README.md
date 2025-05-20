@@ -153,20 +153,6 @@ interface IResource {
    * @returns SoundIndex assigned to the loaded sound.
    */
   loadSound(path: string): SoundIndex;
-
-  /**
-   * Retrieves the index information for an image resource based on its file path.
-   * @param path - The file path of the image.
-   * @returns The corresponding ImageIndex if found; otherwise, undefined.
-   */
-  getImageIndex(path: string): ImageIndex | undefined;
-
-  /**
-   * Retrieves the index information for a sound resource based on its file path.
-   * @param path - The file path of the sound.
-   * @returns The corresponding SoundIndex if found; otherwise, undefined.
-   */
-  getSoundIndex(path: string): SoundIndex | undefined;
 }
 ```
 
@@ -624,7 +610,7 @@ You can use `play()`, `pause()`, `rewind()`, and other methods to control the an
 ## Types
 
 - `Color`: 0–15 (palette index)
-- `ImageIndex`, `SoundIndex`: integer indices for resources
+- `ImageIndex`, `SoundIndex`: unique indices for resources
 - `Key`: string key names (see key.ts for all supported keys)
 
 ---

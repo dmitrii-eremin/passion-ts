@@ -9,14 +9,15 @@ import { Sound } from './sound';
 import { Network } from './network';
 
 import { WSClient } from './internal/ws_client';
+import type { ImageIndex, SoundIndex, WebSocketIndex } from './constants';
 
 export class PassionData {
     public canvas: HTMLCanvasElement | null = null;
     public context: CanvasRenderingContext2D | null = null;
 
-    public images: PassionImage[] = [];
-    public sounds: Sound[] = [];
-    public sockets: WSClient[] = [];
+    public images: Map<ImageIndex, PassionImage> = new Map<ImageIndex, PassionImage>();
+    public sounds: Map<SoundIndex, Sound> = new Map<SoundIndex, Sound>();
+    public sockets: Map<WebSocketIndex, WSClient> = new Map<WebSocketIndex, WSClient>();
 
     displayScale: number = 1;
     touchIdentified?: number;

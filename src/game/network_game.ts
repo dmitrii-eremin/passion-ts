@@ -1,4 +1,4 @@
-import type { ImageIndex, WebSocketIndex } from '../passion/constants';
+import type { ImageIndex, SoundIndex, WebSocketIndex } from '../passion/constants';
 import type { SocketResponseType } from '../passion/network';
 import type { Passion } from '../passion/passion';
 import { Animation, AnimationGrid } from '../passion/stdlib/animation';
@@ -95,7 +95,9 @@ class Ninja {
     private world?: World;
     public readonly objectId: string = `ninja_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
 
-    private spriteId: number;
+    private spriteId: ImageIndex;
+    private soundId: SoundIndex;
+    private sockedId?: WebSocketIndex;
     public name: string;
     public x: number;
     public y: number;
@@ -114,10 +116,12 @@ class Ninja {
     private isMoving: boolean = false;
     private lastPositionUpdate: number = 0;
 
-    constructor(passion: Passion, world: World | undefined, name: string, x: number, y: number) {
+    constructor(passion: Passion, soundId: SoundIndex, sockedId: WebSocketIndex | undefined, world: World | undefined, name: string, x: number, y: number) {
         this.passion = passion;
         this.world = world;
         this.name = name;
+        this.soundId = soundId;
+        this.sockedId = sockedId;
         this.x = x;
         this.y = y;
 
@@ -181,11 +185,11 @@ class Ninja {
             const length = Math.hypot(dx, dy);
             dx /= length;
             dy /= length;
-            this.passion.audio.play(1);
+            this.passion.audio.play(this.soundId);
         }
         else {
             this.animation.stop();
-            this.passion.audio.stop(1);
+            this.passion.audio.stop(this.soundId);
         }
 
         this.move(dx, dy, dt);
@@ -249,11 +253,13 @@ class Ninja {
 
         if (Math.abs(resp.x - this.x) > 0 || Math.abs(resp.y - this.y) > 0) {
             this.isMoving = true;
-            this.passion.network.send(0, {
-                type: 'set_pos',
-                x: resp.x,
-                y: resp.y,
-            } as CommandSetPos);
+            if (this.sockedId) {
+                this.passion.network.send(this.sockedId, {
+                    type: 'set_pos',
+                    x: resp.x,
+                    y: resp.y,
+                } as CommandSetPos);
+            }
         }
 
         this.x = resp.x;
@@ -330,6 +336,9 @@ export class Game {
     private kittyId: ImageIndex;
     private kitties: Kitty[] = [];
 
+    private soundId: SoundIndex;
+    private sockedId: WebSocketIndex;
+
     private drawCollisions = false;
 
     constructor(passion: Passion) {
@@ -339,16 +348,9 @@ export class Game {
 
         this.joystick = new Joystick(this.passion);
 
-        this.ninja = new Ninja(passion, this.world, RandomNameGenerator.generate(), 50, 50);
-        this.kittyId = this.passion.resource.loadImage('./cat_16x16.png');
+        this.soundId = this.passion.resource.loadSound('./Step1.wav');
 
-        this.passion.resource.loadSound('./Jump1.wav');
-        const soundId = this.passion.resource.loadSound('./Step1.wav');
-        this.passion.audio.volume(soundId, 0.3);
-
-        this.passion.audio.speed(1, 3);
-
-        this.passion.network.connect('ws://localhost:8080',
+        this.sockedId = this.passion.network.connect('ws://localhost:8080',
             (idx: WebSocketIndex, responseType: SocketResponseType, incomingData?: string) => {
                 if (responseType === 'connected') {
                     this.passion.network.send(idx, {
@@ -373,7 +375,7 @@ export class Game {
                                 otherPlayer.setTargetPosition(object.x, object.y);
                             }
                             else if (object.name !== this.ninja.name) {
-                                this.otherPlayers.push(new Ninja(this.passion, undefined, object.name, object.x, object.y));
+                                this.otherPlayers.push(new Ninja(this.passion, this.soundId, undefined, undefined, object.name, object.x, object.y));
                             }
                         }
 
@@ -390,6 +392,12 @@ export class Game {
                     }
                 }
         });
+
+        this.ninja = new Ninja(passion, this.soundId, this.sockedId, this.world, RandomNameGenerator.generate(), 50, 50);
+        this.kittyId = this.passion.resource.loadImage('./cat_16x16.png');
+
+        this.passion.audio.volume(this.soundId, 0.3);
+        this.passion.audio.speed(this.soundId, 3);
     }
 
     update(dt: number) {
