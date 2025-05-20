@@ -18,6 +18,10 @@ export class Palette {
     }
 
     replaceColor(col: Color, color: string) {
+        if (typeof col !== 'number') {
+            return;
+        }
+
         if (col >= 0 && col < this.colors.length) {
             this.colors[col] = color;
         }
@@ -36,6 +40,10 @@ export class Palette {
     }
 
     public getColor(col: Color): string {
+        if (typeof col === 'string') {
+            return col;
+        }
+
         if (col <= 0 && col >= this.colors.length) {
             return this.colors[0];
         }
