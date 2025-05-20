@@ -8,7 +8,7 @@ npm install @dmitrii-eremin/passion-engine
 
 At its core, Passion is built around a set of focused subsystems:
 - **System**: Manages the game loop, timing, and canvas scaling, providing a smooth and consistent frame rate.
-- **Graphics**: Offers a pixel-perfect 2D renderer with palette-based color, camera support, and a suite of drawing primitives (lines, rectangles, circles, ellipses, triangles, flood fill, and text rendering using a built-in bitmap font). It supports image blitting with flipping, scaling, rotation, and color key transparency.
+- **Graphics**: Offers a pixel-perfect 2D renderer with palette-based color (custom colors are also possible), camera support, and a suite of drawing primitives (lines, rectangles, circles, ellipses, triangles, flood fill, and text rendering using a built-in bitmap font). It supports image blitting with flipping, scaling, rotation, and color key transparency.
 - **Resource**: Handles loading and managing images and sounds, making asset management simple and efficient.
 - **Input**: Provides unified keyboard and mouse input, including key/button state tracking, repeat/hold logic, and mouse wheel support.
 - **Math**: Supplies utility functions for random numbers, Perlin noise, and common math operations, all tailored for game development.
@@ -609,8 +609,8 @@ You can use `play()`, `pause()`, `rewind()`, and other methods to control the an
 
 ## Types
 
-- `Color`: 0–15 (palette index)
-- `ImageIndex`, `SoundIndex`: unique indices for resources
+- `Color`: 0–15 (palette index) **OR** a string to use a custom color, e.g. #9AF33C
+- `ImageIndex`, `SoundIndex`, `WebSocketIndex`: unique indices for resources
 - `Key`: string key names (see key.ts for all supported keys)
 
 ---
