@@ -161,7 +161,7 @@ class Ninja {
             // network player is here
             if (this.isMoving) {
                 this.animation.play();
-                if (performance.now() - this.lastPositionUpdate > 100) {
+                if (performance.now() - this.lastPositionUpdate > 50) {
                     this.isMoving = false;
                 }
             }
@@ -173,6 +173,10 @@ class Ninja {
         this.animation.update(dt);
     }
 
+    private get nameWidth(): number {
+        return this.name.length * 4;
+    }
+
     draw() {
         if (this.passion.input.btn('KeyP')) {
             this.passion.graphics.pal(otherPalette);
@@ -181,7 +185,7 @@ class Ninja {
             this.passion.graphics.pal();
         }
 
-        this.passion.graphics.text(Math.ceil(this.x) - 4, Math.ceil(this.y) - 8, this.name, 7);
+        this.passion.graphics.text(Math.ceil(this.x) - this.nameWidth / 2, Math.ceil(this.y) - 8, this.name, 7);
         this.animation.draw(this.passion, Math.ceil(this.x), Math.ceil(this.y), this.spriteId);
     }
 
