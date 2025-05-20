@@ -19,6 +19,7 @@ export class PassionData {
     public sockets: WSClient[] = [];
 
     displayScale: number = 1;
+    touchIdentified?: number;
 
     system?: System;
     resource?: Resource;

@@ -70,22 +70,61 @@ export class Passion {
         canvas.addEventListener('mousedown', event => {
              canvas.focus();
              this.data.input?._setMouseDown(event);
+             event.preventDefault();
         });
 
         canvas.addEventListener('mouseup', event => {
             this.data.input?._setMouseUp(event);
+            event.preventDefault();
         });
 
         canvas.addEventListener('keydown', event => {
             this.data.input?._setKeyDown(event.code as Key);
+            event.preventDefault();
         });
 
         canvas.addEventListener('keyup', event => {
             this.data.input?._setKeyUp(event.code as Key);
+            event.preventDefault();
         });
 
         canvas.addEventListener('mousemove', event => {
             this.data.input?._setClientMouse(event.clientX, event.clientY);
+            event.preventDefault();
         });
+
+        canvas.addEventListener('touchstart', event => {
+            canvas.focus();
+            if (event.changedTouches.length === 1) {
+                this.data.touchIdentified = event.changedTouches[0].identifier;
+            }
+
+            for (const touch of event.changedTouches) {
+                if (touch.identifier === this.data.touchIdentified) {
+                    this.data.input?._setMouseDown({ button: 0 } as MouseEvent);
+                }
+            }
+            event.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', event => {
+            for (const touch of event.changedTouches) {
+                if (touch.identifier === this.data.touchIdentified || event.changedTouches.length === 1) {
+                    this.data.input?._setMouseUp({ button: 0 } as MouseEvent);
+                }
+            }
+            event.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', event => {
+           for (const touch of event.changedTouches) {
+                if (touch.identifier === this.data.touchIdentified) {
+                    const mx = touch.clientX;
+                    const my = touch.clientY;
+                    this.data.input?._setClientMouse(mx, my);
+                }
+            }
+            event.preventDefault();
+        }, { passive: false });
     }
 }

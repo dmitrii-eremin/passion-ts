@@ -45,6 +45,51 @@ class RandomNameGenerator {
     }
 }
 
+class Joystick {
+    private passion: Passion;
+    private sx: number = 50;
+    private sy: number = 125;
+
+    constructor(passion: Passion) {
+        this.passion = passion;
+    }
+
+    get dx(): number {
+        if (this.passion.input.btn('MouseButtonLeft')) {
+            return this.sx - this.passion.input.mouse_x;
+        }
+        return 0;
+    }
+
+    get dy(): number {
+        if (this.passion.input.btn('MouseButtonLeft')) {
+            return this.sy - this.passion.input.mouse_y;
+        }
+        return 0;
+    }
+
+    update(_dt: number) {
+    }
+
+    draw() {
+        const isPressed = this.passion.input.btn('MouseButtonLeft');
+
+        this.passion.graphics.circb(this.sx, this.sy, 15, 9);
+
+        let dx = isPressed ? this.passion.input.mouse_x - this.sx : 0;
+        let dy = isPressed ? this.passion.input.mouse_y - this.sy : 0;
+
+        const length = Math.hypot(dx, dy);
+        let nx = 0, ny = 0;
+        if (length > 0) {
+            nx = dx / length;
+            ny = dy / length;
+        }
+
+        this.passion.graphics.circ(this.sx + nx * 15, this.sy + ny * 15, 4, 8);
+    }
+}
+
 class Ninja {
     private passion: Passion;
     private world?: World;
@@ -96,7 +141,7 @@ class Ninja {
         )
     }
 
-    public controlNinja(dt: number) {
+    public controlNinja(dt: number, joystick: Joystick) {
         let dx = 0
         let dy = 0
 
@@ -111,6 +156,11 @@ class Ninja {
         }
         if (this.passion.input.btn('ArrowRight')) {
             dx += 1;
+        }
+
+        if (dx === 0 && dy === 0) {
+            dx = -joystick.dx;
+            dy = -joystick.dy;
         }
 
         if (dx !== 0 || dy !== 0) {
@@ -272,6 +322,8 @@ export class Game {
     private passion: Passion;
     private world: World;
 
+    private joystick: Joystick;
+
     private ninja: Ninja;
     private otherPlayers: Ninja[] = [];
 
@@ -285,6 +337,8 @@ export class Game {
         this.world = Bump.newWorld(16);
         this.passion.system.init(240, 180, 'A demo game');
 
+        this.joystick = new Joystick(this.passion);
+
         this.ninja = new Ninja(passion, this.world, RandomNameGenerator.generate(), 50, 50);
         this.kittyId = this.passion.resource.loadImage('./cat_16x16.png');
 
@@ -294,7 +348,7 @@ export class Game {
 
         this.passion.audio.speed(1, 3);
 
-        this.passion.network.connect('ws://localhost:8080',
+        this.passion.network.connect('ws://192.168.8.164:8080',
             (idx: WebSocketIndex, responseType: SocketResponseType, incomingData?: string) => {
                 if (responseType === 'connected') {
                     this.passion.network.send(idx, {
@@ -347,9 +401,9 @@ export class Game {
             player.update(dt);
         }
 
-
+        this.joystick.update(dt);
         this.ninja.update(dt);
-        this.ninja.controlNinja(dt);
+        this.ninja.controlNinja(dt, this.joystick);
         this.ninja.captureCamera();
     }
 
@@ -380,8 +434,9 @@ export class Game {
 
         this.passion.graphics.camera();
 
-        this.passion.graphics.text(3, 3, `Size: ${this.passion.system.width}x${this.passion.system.height}`, 14);
-        this.passion.graphics.text(3, 15, `FPS: ${this.passion.system.frame_count}`, 14);
-        this.passion.graphics.text(3, 27, `Pos: ${Math.ceil(this.ninja.x)}, ${Math.ceil(this.ninja.y)}`, 14);
+        this.passion.graphics.text(3, 6, `FPS: ${this.passion.system.frame_count}`, 14);
+        this.passion.graphics.text(3, 16, `Pos: ${Math.ceil(this.ninja.x)}, ${Math.ceil(this.ninja.y)}`, 14);
+
+        this.joystick.draw();
     }
 }
