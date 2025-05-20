@@ -1,8 +1,9 @@
-import type { ImageIndex, WebSocketIndex } from './passion/constants';
-import type { SocketResponseType } from './passion/network';
-import type { Passion } from './passion/passion';
-import { Animation, AnimationGrid } from './passion/stdlib/animation';
-import Bump, { World } from './passion/stdlib/bump/index';
+import type { ImageIndex, WebSocketIndex } from '../passion/constants';
+import type { SocketResponseType } from '../passion/network';
+import type { Passion } from '../passion/passion';
+import { Animation, AnimationGrid } from '../passion/stdlib/animation';
+import Bump, { World } from '../passion/stdlib/bump/index';
+import type { Command, CommandLogin, CommandUpdate } from './server';
 
 const otherPalette: string[] = [
     '#f2c0a2',
@@ -25,12 +26,32 @@ const otherPalette: string[] = [
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
+class RandomNameGenerator {
+    private static adjectives = [
+        'Nopea', 'Hiljainen', 'Villi', 'Urhea', 'Fiksu', 'Onnekas', 'Voimakas', 'Kettera', 'Ovela', 'Viisas',
+        'Iloinen', 'Reipas', 'Salainen', 'Rauhallinen', 'Lempea', 'Uskollinen', 'Rohkea', 'Tyyni', 'Utelias', 'Innokas'
+    ];
+
+    private static nouns = [
+        'Tiikeri', 'Kettu', 'Susi', 'Kotka', 'Leijona', 'Pantteri', 'Karhu', 'Haukka', 'Saukon', 'Haukka',
+        'Kissa', 'Koira', 'Jänis', 'Hiiri', 'Poro', 'Hevonen', 'Joutsen', 'Varis', 'Pöllö', 'Hai'
+    ];
+
+    static generate(): string {
+        const adj = this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
+        const noun = this.nouns[Math.floor(Math.random() * this.nouns.length)];
+        const num = Math.floor(Math.random() * 1000);
+        return `${adj}${noun}${num}`;
+    }
+}
+
 class Ninja {
     private passion: Passion;
     private world: World;
     public readonly objectId: string = `ninja_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
 
     private spriteId: number;
+    public name: string;
     public x: number;
     public y: number;
     private w = 16;
@@ -45,9 +66,10 @@ class Ninja {
 
     private grid: AnimationGrid;
 
-    constructor(passion: Passion, world: World, x: number, y: number) {
+    constructor(passion: Passion, world: World, name: string, x: number, y: number) {
         this.passion = passion;
         this.world = world;
+        this.name = name;
         this.x = x;
         this.y = y;
 
@@ -141,7 +163,7 @@ class Ninja {
             this.passion.graphics.pal();
         }
 
-        this.passion.graphics.text(Math.ceil(this.x) - 4, Math.ceil(this.y) - 8, 'Mitta', 7);
+        this.passion.graphics.text(Math.ceil(this.x) - 4, Math.ceil(this.y) - 8, this.name, 7);
         this.animation.draw(this.passion, Math.ceil(this.x), Math.ceil(this.y), this.spriteId);
     }
 
@@ -201,7 +223,7 @@ export class Game {
         this.world = Bump.newWorld(16);
         this.passion.system.init(240, 180, 'A demo game');
 
-        this.ninja = new Ninja(passion, this.world, 50, 50);
+        this.ninja = new Ninja(passion, this.world, RandomNameGenerator.generate(), 50, 50);
         const kittyId = this.passion.resource.loadImage('./cat_16x16.png');
 
         this.passion.resource.loadSound('./Jump1.wav');
@@ -219,8 +241,22 @@ export class Game {
         }
 
         this.socket = this.passion.network.connect('ws://localhost:8080',
-            (idx: WebSocketIndex, responseType: SocketResponseType, data?: any) => {
-            console.log('socket event: ', idx, responseType, data);
+            (idx: WebSocketIndex, responseType: SocketResponseType, data?: Command) => {
+                if (responseType === 'connected') {
+                    this.passion.network.send(idx, {
+                        type: 'login',
+                        username: this.ninja.name
+                    } as CommandLogin);
+                }
+                else if (responseType === 'disconnected' || responseType === 'error') {
+                    
+                }
+                else if (responseType === 'message') {
+                    if (data?.type === 'update') {
+                        const updateData: CommandUpdate = data! as CommandUpdate;
+                        console.log('data: ', updateData);
+                    }
+                }
         });
     }
 
