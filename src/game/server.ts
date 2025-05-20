@@ -81,6 +81,17 @@ wss.on('connection', ws => {
     ws.on('close', () => {
         console.log('Client disconnected');
         activePlayers.delete(ws);
+
+        const updateData: CommandUpdate = {
+            type: 'update',
+            objects: Array.from(activePlayers.values()),
+            cats
+        };
+        wss.clients.forEach((client: WebSocket) => {
+            if (client.readyState === ws.OPEN) {
+                client.send(JSON.stringify(updateData));
+            }
+        });
     });
 });
 
