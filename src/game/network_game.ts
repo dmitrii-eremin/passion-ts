@@ -2,7 +2,7 @@ import type { ImageIndex, SoundIndex, WebSocketIndex } from '../passion/constant
 import type { SocketResponseType } from '../passion/network';
 import type { Passion } from '../passion/passion';
 import { Animation, AnimationGrid } from '../passion/stdlib/animation';
-import Bump, { World } from '../passion/stdlib/bump/index';
+import { Bump, World } from '../passion/stdlib/bump/index';
 import type { Command, CommandLogin, CommandSetPos, CommandUpdate } from './server';
 
 const otherPalette: string[] = [

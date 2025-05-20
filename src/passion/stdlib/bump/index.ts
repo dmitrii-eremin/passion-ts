@@ -719,7 +719,7 @@ export class World {
 
 // Public library functions
 
-const bump = {
+export const Bump = {
   newWorld: function(cellSize: number): World {
     cellSize = cellSize || 64;
 
@@ -757,4 +757,4 @@ const bump = {
   },
 };
 
-export default Object.freeze(bump);
+// export default Object.freeze(bump);
