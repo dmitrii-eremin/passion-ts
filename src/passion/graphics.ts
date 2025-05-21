@@ -11,6 +11,7 @@ export interface IGraphics {
     readonly images: PassionImage[];
 
     camera(x?: number, y?: number): void;
+    clip(left?: number, top?: number, width?: number, height?: number): void;
 
     pal(colors?: string[]): void;
     font(bdfFontData?: string): void;
@@ -67,6 +68,23 @@ export class Graphics implements IGraphics, SubSystem {
 
         const scale = this.data.displayScale;
         this.data.context!.setTransform(scale, 0, 0, scale, -x * scale, -y * scale);
+    }
+
+    clip(left?: number, top?: number, width?: number, height?: number) {
+        if (!this.data.isReady()) {
+            return;
+        }
+
+        const ctx = this.data.context!;
+        if (left === undefined && top === undefined && width === undefined && height === undefined) {
+            ctx.restore();
+        }
+        else if (left && top && width && height) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(left, top, width, height);
+            ctx.clip();
+        }
     }
 
     pal(colors?: string[]) {

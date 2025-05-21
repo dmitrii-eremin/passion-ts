@@ -17,6 +17,7 @@ A `Position` object encapsulates an `x` and `y` coordinate, representing a point
 #### Properties
 - `x: number` — The x coordinate.
 - `y: number` — The y coordinate.
+- `length: number` — The distance from the origin to this position (read-only).
 
 #### Constructor
 ```typescript
@@ -25,6 +26,22 @@ constructor(x: number = 0, y: number = 0)
 - **x**: `number` *(optional)* — The x coordinate. Defaults to `0`.
 - **y**: `number` *(optional)* — The y coordinate. Defaults to `0`.
 - **returns**: `Position` — A new Position instance.
+
+#### Instance Methods
+
+##### `normalize(): Position`
+Returns a new `Position` with the same direction but a length of 1 (unit vector). If the position is at the origin, returns (0, 0).
+- **returns**: `Position` — The normalized position.
+
+##### `add(other: Position): Position`
+Returns a new `Position` that is the sum of this position and another.
+- **other**: `Position` — The position to add.
+- **returns**: `Position` — The resulting position.
+
+##### `multiple(num: number): Position`
+Returns a new `Position` scaled by the given number.
+- **num**: `number` — The scale factor.
+- **returns**: `Position` — The scaled position.
 
 #### Static Methods
 
@@ -39,6 +56,10 @@ Creates a new `Position` instance from x and y coordinates.
 - **y**: `number` — The y coordinate.
 - **returns**: `Position` — A new Position with the given coordinates.
 
+##### `random(): Position`
+Creates a new `Position` with random direction (unit vector).
+- **returns**: `Position` — A random unit vector position.
+
 ---
 
 ## Example Usage
@@ -47,11 +68,26 @@ Creates a new `Position` instance from x and y coordinates.
 // Create a position at (10, 20)
 const p1: Position = new Position(10, 20);
 
+// Get the length (distance from origin)
+const len: number = p1.length;
+
 // Copy an existing position
 const p2: Position = Position.fromPosition(p1);
 
 // Create a position from coordinates
 const p3: Position = Position.fromCoords(5, 15);
+
+// Normalize a position
+const unit: Position = p1.normalize();
+
+// Add two positions
+const sum: Position = p1.add(p3);
+
+// Scale a position
+const scaled: Position = p1.multiple(2);
+
+// Generate a random unit vector position
+const randomPos: Position = Position.random();
 
 // Access coordinates
 drawSprite(p1.x, p1.y);
