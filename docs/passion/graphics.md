@@ -27,6 +27,14 @@ Sets the camera (scroll) position for all subsequent drawing operations.
 - **y**: `number` *(optional)* — The y offset. Defaults to `0`.
 - **returns**: `void`
 
+##### `clip(left?: number, top?: number, width?: number, height?: number): void`
+Sets or resets the clipping rectangle for drawing. If all arguments are omitted, restores the previous clip.
+- **left**: `number` *(optional)* — Left edge of the clip rectangle.
+- **top**: `number` *(optional)* — Top edge of the clip rectangle.
+- **width**: `number` *(optional)* — Width of the clip rectangle.
+- **height**: `number` *(optional)* — Height of the clip rectangle.
+- **returns**: `void`
+
 ##### `pal(colors?: string[]): void`
 Sets the current color palette.
 - **colors**: `string[]` *(optional)* — An array of color hex strings. If omitted, resets to the default palette.
