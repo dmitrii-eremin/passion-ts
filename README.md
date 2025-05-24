@@ -37,9 +37,10 @@ The latest documentation is always available in this readme file, or you can bro
   * [IAudio](./docs/passion/audio.md) — Sound playback and audio control.
   * [INetwork](./docs/passion/network.md) — WebSocket networking for multiplayer and online games.
 * StdLib - a set of useful helpers to extend the main engine
-  * [Animation (stdlib)](./docs/stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
-  * [Position (stdlib)](./docs/stdlib/position.md) — 2D position utility class.
-  * [Rect (stdlib)](./docs/stdlib/rect.md) — 2D rectangle utility class.
+  * [Animation](./docs/stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
+  * [Tween](./docs/stdlib/tween.md) — Tweening and Easing Utility API Reference
+  * [Position](./docs/stdlib/position.md) — 2D position utility class.
+  * [Rect](./docs/stdlib/rect.md) — 2D rectangle utility class.
 
 Passion also includes a standard library (stdlib) with additional helper classes, as listed above, to further support your game development needs.
 

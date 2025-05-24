@@ -13,6 +13,7 @@ export interface IMath {
     rseed(seed: number): void;
     rndi(a: number, b: number): number;
     rndf(a: number, b: number): number;
+    choice<T>(arr: T[]): T;
     nseed(seed: number): void;
     noise(x: number, y?: number, z?: number): number;
 }
@@ -64,6 +65,14 @@ export class PassionMath implements IMath, SubSystem {
 
     rndf(a: number, b: number): number {
         return this.randomGenerator.next() * (b - a) + a;
+    }
+
+    choice<T>(arr: T[]): T {
+        if (!arr.length) {
+            throw new Error("Cannot choose from an empty array");
+        }
+        const idx = this.rndi(0, arr.length - 1);
+        return arr[idx];
     }
 
     nseed(seed: number): void {

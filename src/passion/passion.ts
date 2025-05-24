@@ -80,7 +80,8 @@ export class Passion {
 
         canvas.addEventListener('keydown', event => {
             this.data.input?._setKeyDown(event.code as Key);
-            event.preventDefault();
+            // I'm not sure should we do this or not. Depends on what user wants to do
+            // event.preventDefault();
         });
 
         canvas.addEventListener('keyup', event => {
