@@ -39,6 +39,7 @@ The latest documentation is always available in this readme file, or you can bro
 * StdLib - a set of useful helpers to extend the main engine
   * [Animation (stdlib)](./stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
   * [Position (stdlib)](./stdlib/position.md) — 2D position utility class.
+  * [Rect (stdlib)](./stdlib/rect.md) — 2D rectangle utility class.
 
 Passion also includes a standard library (stdlib) with additional helper classes, as listed above, to further support your game development needs.
 

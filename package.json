@@ -1,6 +1,6 @@
 {
   "name": "@dmitrii-eremin/passion-engine",
-  "version": "1.0.64",
+  "version": "1.0.68",
   "description": "A modern, lightweight browser game engine for TypeScript, inspired by Pyxel.",
   "author": "Dmitrii Eremin <erem.dmitrii@gmail.com>",
   "license": "MIT",
@@ -28,8 +28,8 @@
     "run:server": "tsc src/game/server.ts && mkdir -p tmp && mv src/game/server.js tmp/server.cjs && node tmp/server.cjs",
     "preview": "vite preview",
     "test": "true",
-    "publish_npmjs": "npm publish --access public --registry=https://registry.npmjs.org/",
-    "publish_github": "npm publish --access public --registry=https://npm.pkg.github.com/",
+    "publish_npmjs": "npm publish --registry=https://registry.npmjs.org/",
+    "publish_github": "npm publish --registry=https://npm.pkg.github.com/",
     "publish": "npm-run-all build:engine publish_npmjs publish_github"
   },
   "devDependencies": {
