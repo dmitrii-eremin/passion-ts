@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#061620" nextlayerid="6" nextobjectid="5">
+ <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="40" columns="8">
+  <image source="grotto_escape_pack/graphics/tiles.png" width="128" height="80"/>
+ </tileset>
+ <tileset firstgid="41" name="ufeff_tiles_v2" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="grotto_escape_pack/graphics/ufeff_tiles_v2.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="297" name="chars" tilewidth="16" tileheight="16" tilecount="12" columns="4">
+  <image source="grotto_escape_pack/graphics/enemies.png" width="64" height="48"/>
+ </tileset>
+ <imagelayer id="4" name="Image Layer 1" offsetx="1.91388" offsety="61.244">
+  <image source="grotto_escape_pack/graphics/meter.png" width="28" height="42"/>
+ </imagelayer>
+ <layer id="1" name="Tile Layer 1" width="64" height="64">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAP3UEAMQCIQAAACMiIyQAAQAAAAMAAAACBAAHAAAACAAWDg4WGQAAABsAAAAaGxwAISMpoEBzJWvAAiqasM0B/ZM83JxSDqDwHbgHhXvIh0cMfLA4wFLnIbR3COI5JOEpo57zhoY325u6lJ4anPIC1PAPc8jfZcqgWh36mtp5SDWUs0R+ApORQ4g65Mw95md01kk=
+  </data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="64" height="64">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAPy0BAGgACRMAAAARFAAAABIRCADRGMfhqAe7eIHTK662A/7YdceP6tg=
+  </data>
+ </layer>
+ <objectgroup id="3" name="objects">
+  <object id="1" gid="51" x="170.469" y="119.962" width="16" height="16"/>
+  <object id="3" gid="59" x="152.766" y="67.8086" width="16" height="16">
+   <properties>
+    <property name="foreground" type="color" value="#ff56c55e"/>
+    <property name="hidden" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="4" gid="305" x="65.2057" y="72.5933" width="16" height="16">
+   <properties>
+    <property name="level" type="int" value="44"/>
+    <property name="name" value="beholder"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
