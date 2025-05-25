@@ -7,6 +7,7 @@ import { type IMath, PassionMath } from './math';
 import { type IAudio, Audio } from './audio';
 import { type INetwork, Network } from './network';
 import type { Key } from './key';
+import { Tiled, type ITiled } from './stdlib/tiled';
 
 export class Passion {
     private data: PassionData = new PassionData();
@@ -18,6 +19,8 @@ export class Passion {
     math: IMath;
     audio: IAudio;
     network: INetwork;
+
+    readonly tiled: ITiled;
 
     constructor(canvas: HTMLCanvasElement) {
         this.data.canvas = canvas;
@@ -58,6 +61,9 @@ export class Passion {
         this.math = this.data.math;
         this.audio = this.data.audio;
         this.network = this.data.network;
+
+        // Some extra components
+        this.tiled = new Tiled(this.data);
 
         canvas.tabIndex = 0;
         canvas.addEventListener('wheel', event => {
