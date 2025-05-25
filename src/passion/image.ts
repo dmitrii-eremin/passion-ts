@@ -2,10 +2,15 @@ export class PassionImage {
     private data: HTMLImageElement;
     private isReady: boolean = false;
 
+    width: number = 0;
+    height: number = 0;
+
     constructor(path: string) {
         this.data = new Image();
         this.data.src = path;
         this.data.onload = () => {
+            this.width = this.data.width;
+            this.height = this.data.height;
             this.isReady = true;
         };
     }
@@ -20,7 +25,8 @@ export class PassionImage {
         h: number,
         colkey?: string,
         rotate?: number,
-        scale?: number
+        scaleX?: number,
+        scaleY?: number,
     ) {
         if (!this.isReady) return;
 
@@ -35,8 +41,9 @@ export class PassionImage {
         canvas.translate(x, y);
 
         // Apply scaling if specified
-        if (scale) {
-            canvas.scale(scale, scale);
+        if (scaleX) {
+            scaleY = scaleY ?? scaleX;
+            canvas.scale(scaleX, scaleY);
         }
 
         // Handle flipping
