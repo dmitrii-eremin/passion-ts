@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#061620" nextlayerid="6" nextobjectid="6">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#061620" nextlayerid="7" nextobjectid="6">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="40" columns="8">
   <image source="grotto_escape_pack/graphics/tiles.png" width="128" height="80"/>
  </tileset>
@@ -39,20 +39,21 @@
    KLUv/WAAPy0BAGgACRMAAAARFAAAABIRCADRGMfhqAe7eIHTK662A/7YdceP6tg=
   </data>
  </layer>
+ <objectgroup id="6" name="scene"/>
  <objectgroup id="3" name="objects">
-  <object id="1" gid="51" x="170.469" y="119.962" width="16" height="16"/>
-  <object id="3" gid="59" x="152.766" y="67.8086" width="16" height="16">
+  <object id="1" type="Armor" gid="51" x="224" y="80" width="16" height="16"/>
+  <object id="3" name="Player" type="Character" gid="59" x="32" y="64" width="16" height="16">
    <properties>
     <property name="foreground" type="color" value="#ff56c55e"/>
     <property name="hidden" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="4" gid="305" x="65.2057" y="72.5933" width="16" height="16">
+  <object id="4" name="Bat" type="NPC" gid="305" x="65.2057" y="72.5933" width="16" height="16">
    <properties>
     <property name="level" type="int" value="44"/>
     <property name="name" value="beholder"/>
    </properties>
   </object>
-  <object id="5" gid="301" x="119.798" y="115.22" width="16" height="16"/>
+  <object id="5" name="Dino" type="NPC" gid="301" x="119.798" y="115.22" width="16" height="16"/>
  </objectgroup>
 </map>

@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import type { TileDrawingType, IDrawableLayer, ILayer, IMap, IObjectGroup, ITileset, Orientation, RenderOrder } from "./tiledTypes";
+import type { TileDrawingType, IDrawableLayer, ILayer, IMap, IObjectGroup, ITileset, Orientation, RenderOrder, IObject } from "./tiledTypes";
 import { Tileset } from "./tileset";
 import { Layer } from "./layer";
 import type { PassionData } from "../../data";
@@ -23,11 +23,11 @@ export class Map implements IMap {
 
     private tilesets: ITileset[] = [];
 
-    private layers: ILayer[] = [];
+    private tileLayers: ILayer[] = [];
     private objectGroups: IObjectGroup[] = [];
     private imageLayers: ImageLayer[] = [];
 
-    private drawableLayers: IDrawableLayer[] = [];
+    layers: IDrawableLayer[] = [];
 
     constructor(data: PassionData) {
         this.data = data;
@@ -39,7 +39,7 @@ export class Map implements IMap {
         const content = await loadXmlFile(filename);
         this.parseMetaData(content);
         this.parseTilesets(folder, content);
-        this.parseLayers(content);
+        this.parseTileLayers(content);
         this.parseObjectGroups(content);
         this.parseImageLayers(this.data, folder, content);
 
@@ -51,7 +51,12 @@ export class Map implements IMap {
     }
 
     draw(x: number, y: number) {
-        for (const layer of this.drawableLayers) {
+        for (const layer of this.layers) {
+            if (layer.customDrawCallback !== undefined) {
+                layer.customDrawCallback(layer, x, y);
+                continue;
+            }
+
             layer.draw((type: TileDrawingType, gid: number, ox: number, oy: number, w?: number, h?: number) => {
                 const tileset = this.getTilesetByGid(gid);
                 if (!tileset) {
@@ -68,11 +73,23 @@ export class Map implements IMap {
         }
     }
 
+    getObjectsByType(typeName: string): IObject[] {
+        return this.objectGroups.flatMap(group => group.getObjectsByType(typeName));
+    }
+
+    getObjectsByName(name: string): IObject[] {
+        return this.objectGroups.flatMap(group => group.getObjectsByName(name));
+    }
+
+    getLayersByName(name: string): IDrawableLayer[] {
+        return this.layers.filter(l => l.name === name);
+    }
+
     private getTilesetByGid(gid: number): ITileset | undefined {
         return this.tilesets.find(item => item.containsGid(gid));
     }
 
-    private parseLayers(content: any) {
+    private parseTileLayers(content: any) {
         const mapMetaData = content.map ?? {};
         let layers = mapMetaData['layer'];
         if (!layers) {
@@ -84,7 +101,7 @@ export class Map implements IMap {
 
         for (const item of layers) {
             const layer = new Layer(this.tileWidth, this.tileHeight, item);
-            this.layers.push(layer);
+            this.tileLayers.push(layer);
         }
     }
 
@@ -121,12 +138,12 @@ export class Map implements IMap {
     }
 
     private collectDrawableLayers() {
-        const ids = [...this.layers.map(v => v.id), ...this.objectGroups.map(v => v.id), ...this.imageLayers.map(v => v.id)].sort();
-        this.drawableLayers = (ids.map(id => this.getDrawableObjectById(id)).filter(i => i)) as IDrawableLayer[];
+        const ids = [...this.tileLayers.map(v => v.id), ...this.objectGroups.map(v => v.id), ...this.imageLayers.map(v => v.id)].sort();
+        this.layers = (ids.map(id => this.getDrawableObjectById(id)).filter(i => i)) as IDrawableLayer[];
     }
 
     private getDrawableObjectById(id: number): IDrawableLayer | undefined {
-        let layer: IDrawableLayer | undefined = this.layers.find(v => v.id === id);
+        let layer: IDrawableLayer | undefined = this.tileLayers.find(v => v.id === id);
         if (layer) {
             return layer;
         }

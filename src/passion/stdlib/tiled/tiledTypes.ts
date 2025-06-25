@@ -46,6 +46,8 @@ export interface IObject {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly type: string;
+    readonly name: string;
 
     readonly properties: { [key: string]: ObjectProperty };
 
@@ -56,6 +58,7 @@ export type Encoding = 'csv' | 'base64';
 export type Compression = 'gzip' | 'zlib' | 'zstd';
 export type TileDrawingType = 'tile' | 'object';
 export type DrawCallback = (type: TileDrawingType, gid: number, x: number, y: number, w?: number, h?: number) => void;
+export type CustomDrawCallback = (layer: IDrawableLayer, x: number, y: number) => void;
 
 export interface IDrawableLayer {
     readonly name: string;
@@ -63,8 +66,10 @@ export interface IDrawableLayer {
     readonly visible: boolean;
     readonly offsetX: number;
     readonly offsetY: number;
+    readonly customDrawCallback: CustomDrawCallback | undefined;
 
     draw(cb: DrawCallback): void;
+    setCustomDrawCallback(cb: CustomDrawCallback | undefined): void;
 }
 
 export interface ILayer extends IDrawableLayer {
@@ -77,6 +82,9 @@ export interface ILayer extends IDrawableLayer {
 
 export interface IObjectGroup extends IDrawableLayer {
     readonly objects: IObject[];
+
+    getObjectsByType(typeName: string): IObject[];
+    getObjectsByName(name: string): IObject[];
 }
 
 export interface IImageLayer extends IDrawableLayer {}
@@ -93,6 +101,13 @@ export interface IMap {
     readonly infinite: boolean;
     readonly backgroundColor: Color;
 
+    readonly layers: IDrawableLayer[];
+
     update(dt: number): void;
     draw(x: number, y: number): void;
+
+    getObjectsByType(typeName: string): IObject[];
+
+    getObjectsByName(name: string): IObject[];
+    getLayersByName(name: string): IDrawableLayer[];
 };

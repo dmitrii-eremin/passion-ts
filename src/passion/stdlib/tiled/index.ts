@@ -15,7 +15,7 @@ export class Tiled implements ITiled {
     
     async load(filename: string): Promise<IMap> {
         const map = new Map(this.data);
-        map.load(filename);
+        await map.load(filename);
         return map;
     }
 }

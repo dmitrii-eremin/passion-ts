@@ -1,4 +1,4 @@
-import type { DrawCallback, IObject, IObjectGroup } from "./tiledTypes";
+import type { CustomDrawCallback, DrawCallback, IObject, IObjectGroup } from "./tiledTypes";
 import { Object } from "./object";
 
 export class ObjectGroup implements IObjectGroup {
@@ -10,6 +10,8 @@ export class ObjectGroup implements IObjectGroup {
 
     objects: IObject[] = [];
 
+    customDrawCallback: CustomDrawCallback | undefined;
+
     constructor(metadata: any) {
         this.name = metadata['@_name'] ?? '';
         this.id = parseInt(metadata['@_id'] ?? '0');
@@ -18,6 +20,18 @@ export class ObjectGroup implements IObjectGroup {
         this.offsetY = parseInt(metadata['@_offsety'] ?? '0');
 
         this.parseObjects(metadata);
+    }
+
+    setCustomDrawCallback(cb: CustomDrawCallback | undefined) {
+        this.customDrawCallback = cb;
+    }
+
+    getObjectsByType(typeName: string): IObject[] {
+        return this.objects.filter(o => o.type === typeName);
+    }
+
+    getObjectsByName(name: string): IObject[] {
+        return this.objects.filter(o => o.name === name);
     }
 
     draw(cb: DrawCallback) {
