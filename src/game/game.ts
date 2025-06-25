@@ -1,5 +1,5 @@
 import type { Passion } from "../passion/passion";
-import type { IMap } from "../passion/stdlib/tiled/tiledTypes";
+import type { IDrawableLayer, IMap } from "../passion/stdlib/tiled/tiledTypes";
 
 export class Game {
     private passion: Passion;
@@ -10,6 +10,10 @@ export class Game {
         this.passion.system.init(360, 240, 'Tweening demo');
         this.passion.tiled.load('./tilemap/tilemap.tmx').then((map) => {
             this.map = map;
+            const scene = map.getLayersByName('scene')[0];
+            scene.setCustomDrawCallback((_layer: IDrawableLayer, x: number, y: number) => {
+                this.passion.graphics.rectb(x + 20, y + 20, 100, 45, 5);
+            });
         });
     }
 

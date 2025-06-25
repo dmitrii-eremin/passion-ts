@@ -7,8 +7,14 @@ export class Object implements IObject {
     y: number;
     width: number;
     height: number;
+    name: string;
+    type: string;
 
     properties: { [key: string]: ObjectProperty } = {};
+
+    get isVisible(): boolean {
+        return !this.properties['hidden'];
+    }
 
     constructor(metadata: any) {
         this.id = parseInt(metadata['@_id'] ?? '0');
@@ -17,6 +23,8 @@ export class Object implements IObject {
         this.y = parseInt(metadata['@_y'] ?? '0');
         this.width = parseInt(metadata['@_width'] ?? '0');
         this.height = parseInt(metadata['@_height'] ?? '0');
+        this.name = metadata['@_name'] ?? '';
+        this.type = metadata['@_type'] ?? '';
 
         if (metadata.properties) {
             const properties = Array.isArray(metadata.properties.property) ? metadata.properties.property : [metadata.properties.property];
@@ -27,6 +35,10 @@ export class Object implements IObject {
     }
 
     draw(cb: DrawCallback) {
+        if (!this.isVisible) {
+            return;
+        }
+
         cb('object', this.gid, this.x, this.y, this.width, this.height);
     }
 

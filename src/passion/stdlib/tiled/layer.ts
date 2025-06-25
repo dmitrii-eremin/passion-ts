@@ -1,4 +1,4 @@
-import type { Compression, DrawCallback, Encoding, ILayer } from "./tiledTypes";
+import type { Compression, CustomDrawCallback, DrawCallback, Encoding, ILayer } from "./tiledTypes";
 import { createDecompressor } from "./utils/decompressor";
 
 export class Layer implements ILayer {
@@ -17,6 +17,8 @@ export class Layer implements ILayer {
     tw: number = 0;
     th: number = 0;
 
+    customDrawCallback: CustomDrawCallback | undefined;
+
     constructor(tw: number, th: number, metadata: any) {
         this.tw = tw;
         this.th = th;
@@ -34,6 +36,10 @@ export class Layer implements ILayer {
             .then(value => {
                 this.tiles = value;
             });
+    }
+
+    setCustomDrawCallback(cb: CustomDrawCallback | undefined) {
+        this.customDrawCallback = cb;
     }
 
     draw(cb: DrawCallback) {

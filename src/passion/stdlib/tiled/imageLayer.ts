@@ -1,4 +1,4 @@
-import type { DrawCallback, IImageLayer } from "./tiledTypes";
+import type { CustomDrawCallback, DrawCallback, IImageLayer } from "./tiledTypes";
 import type { PassionData } from "../../data";
 import { Image } from "./image";
 
@@ -11,6 +11,8 @@ export class ImageLayer implements IImageLayer {
     offsetX: number = 0;
     offsetY: number = 0;
 
+    customDrawCallback: CustomDrawCallback | undefined;
+
     private image: Image;
 
     constructor(data: PassionData, folder: string, metadata: any) {
@@ -22,6 +24,10 @@ export class ImageLayer implements IImageLayer {
         this.offsetY = parseInt(metadata['@_offsety'] ?? '0');
 
         this.image = new Image(this.data, folder, metadata['image']);
+    }
+
+    setCustomDrawCallback(cb: CustomDrawCallback | undefined) {
+        this.customDrawCallback = cb;
     }
 
     draw(_cb: DrawCallback) {
