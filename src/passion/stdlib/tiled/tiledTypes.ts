@@ -11,6 +11,16 @@ export interface IImage {
     blt(x: number, y: number, u: number, v: number, w: number, h: number, renderWidth?: number, renderHeight?: number): void;
 }
 
+export interface ITileAnimationFrame {
+    tileid: number;
+    duration: number;
+}
+
+export interface ITileAnimation {
+    gid: number;
+    frames: ITileAnimationFrame[];
+}
+
 export interface ITileset {
     readonly name: string;
     readonly firstGid: number;
@@ -20,8 +30,10 @@ export interface ITileset {
     readonly columns: number;
 
     readonly image: IImage;
+    readonly animations: ITileAnimation[];
 
     containsGid(gid: number): boolean;
+    update(dt: number): void;
     blt(gid: number, x: number, y: number, w?: number, h?: number): void;
 }
 

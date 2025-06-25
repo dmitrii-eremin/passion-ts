@@ -1,6 +1,48 @@
 import type { PassionData } from "../../data";
 import { Image } from "./image";
-import type { IImage, ITileset } from "./tiledTypes";
+import { TileAnimation } from "./tileAnimation";
+import type { IImage, ITileAnimation, ITileAnimationFrame, ITileset } from "./tiledTypes";
+
+class TileGidAnimationCounter {
+    readonly originalGid: number;
+    readonly frames: ITileAnimationFrame[];
+
+    private timePassed: number = 0;
+    private index: number = 0;
+
+    get gid(): number {
+        if (this.frames.length === 0) {
+            return this.originalGid;
+        }
+
+        return this.frames[this.index].tileid;
+    }
+
+    constructor(animation: ITileAnimation) {
+        this.originalGid = animation.gid;
+        this.frames = animation.frames;
+    }
+
+    update(dt: number) {
+        if (this.frames.length === 0) {
+            return;
+        }
+
+        this.timePassed += dt;
+
+        const currentDuration = this.frames[this.index].duration;
+        while (this.timePassed >=currentDuration) {
+            this.timePassed -=currentDuration;
+            this.index += 1;
+            if (this.index >= this.frames.length) {
+                this.index = 0;
+            }
+            if (currentDuration < 0.001) {
+                break;
+            }
+        }
+    }
+}
 
 export class Tileset implements ITileset {
     private data: PassionData;
@@ -13,6 +55,9 @@ export class Tileset implements ITileset {
     columns: number = 0;
 
     readonly image: IImage;
+    readonly animations: ITileAnimation[];
+
+    private animationCounters: Record<number, TileGidAnimationCounter>;
 
     private get lastGid(): number {
         return this.firstGid + this.tileCount - 1;
@@ -29,16 +74,34 @@ export class Tileset implements ITileset {
         this.columns = parseInt(metadata['@_columns'] ?? '0');
 
         this.image = new Image(this.data, folder, metadata.image ?? {});
+        this.animations = this.parseAnimations(metadata);
+        this.animationCounters = this.animations.reduce<Record<number, TileGidAnimationCounter>>((acc, a) => {
+            acc[a.gid] = new TileGidAnimationCounter(a);
+            return acc;
+        }, {});
+    }
+
+    private parseAnimations(metadata: any): ITileAnimation[] {
+        let tiles = metadata['tile'];
+        if (tiles === undefined) {
+            return [];
+        }
+        if (!Array.isArray(tiles)) {
+            tiles = [tiles];
+        }
+        return (tiles as any[]).map(t => new TileAnimation(t, this.firstGid));
     }
 
     containsGid(gid: number): boolean {
         return gid >= this.firstGid && gid <= this.lastGid;
     }
 
-    blt(gid: number, x: number, y: number, w?: number, h?: number) {
-        if (!this.containsGid(gid)) {
+    blt(originalGid: number, x: number, y: number, w?: number, h?: number) {
+        if (!this.containsGid(originalGid)) {
             return;
         }
+
+        const gid = this.getGid(originalGid);
 
         const localId = gid - this.firstGid;
         const tileX = localId % this.columns;
@@ -48,5 +111,21 @@ export class Tileset implements ITileset {
         const v = tileY * this.tileWidth;
 
         this.image.blt(x, y, u, v, this.tileWidth, this.tileHeight, w, h);
+    }
+
+    update(dt: number) {
+        for (const counter of Object.values(this.animationCounters)) {
+            counter.update(dt);
+        }
+    }
+
+    private getGid(originalGid: number): number {
+        const counter = this.animationCounters[originalGid];
+        if (!counter) {
+            return originalGid;
+        }
+
+        return counter.gid;
+        
     }
 }

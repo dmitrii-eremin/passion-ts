@@ -46,7 +46,8 @@ export class Map implements IMap {
         this.collectDrawableLayers();
     }
 
-    update(_dt: number) {
+    update(dt: number) {
+        this.tilesets.forEach(t => t.update(dt));
     }
 
     draw(x: number, y: number) {

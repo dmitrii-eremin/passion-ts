@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#061620" nextlayerid="6" nextobjectid="5">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#061620" nextlayerid="6" nextobjectid="6">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="40" columns="8">
   <image source="grotto_escape_pack/graphics/tiles.png" width="128" height="80"/>
  </tileset>
@@ -8,6 +8,23 @@
  </tileset>
  <tileset firstgid="297" name="chars" tilewidth="16" tileheight="16" tilecount="12" columns="4">
   <image source="grotto_escape_pack/graphics/enemies.png" width="64" height="48"/>
+  <tile id="4">
+   <animation>
+    <frame tileid="4" duration="150"/>
+    <frame tileid="5" duration="150"/>
+    <frame tileid="6" duration="150"/>
+    <frame tileid="7" duration="150"/>
+    <frame tileid="6" duration="150"/>
+   </animation>
+  </tile>
+  <tile id="8">
+   <animation>
+    <frame tileid="8" duration="150"/>
+    <frame tileid="9" duration="150"/>
+    <frame tileid="10" duration="150"/>
+    <frame tileid="9" duration="150"/>
+   </animation>
+  </tile>
  </tileset>
  <imagelayer id="4" name="Image Layer 1" offsetx="1.91388" offsety="61.244">
   <image source="grotto_escape_pack/graphics/meter.png" width="28" height="42"/>
@@ -36,5 +53,6 @@
     <property name="name" value="beholder"/>
    </properties>
   </object>
+  <object id="5" gid="301" x="119.798" y="115.22" width="16" height="16"/>
  </objectgroup>
 </map>
