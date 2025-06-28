@@ -10,6 +10,7 @@ import { Network } from './network';
 
 import { WSClient } from './internal/ws_client';
 import type { ImageIndex, SoundIndex, WebSocketIndex } from './constants';
+import type { PassionStorage } from './storage';
 
 export class PassionData {
     public canvas: HTMLCanvasElement | null = null;
@@ -29,6 +30,7 @@ export class PassionData {
     math?: PassionMath;
     audio?: Audio;
     network?: Network;
+    storage?: PassionStorage;
 
     isReady(): boolean {
         return this.canvas !== null && this.context !== null;
