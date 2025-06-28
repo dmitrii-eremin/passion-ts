@@ -20,19 +20,25 @@ export class Layer implements ILayer {
     customDrawCallback: CustomDrawCallback | undefined;
 
     constructor(tw: number, th: number, metadata: any) {
+        const layerArr = Array.isArray(metadata?.layer) ? metadata.layer : [];
+        const layer = layerArr[0] ?? {};
+
         this.tw = tw;
         this.th = th;
-        this.name = metadata['@_name'] ?? '';
-        this.id = parseInt(metadata['@_id'] ?? '0');
-        this.width = parseInt(metadata['@_width'] ?? '0');
-        this.height = parseInt(metadata['@_height'] ?? '0');
-        this.encoding = (metadata['data'] ?? {})['@_encoding'];
-        this.compression = (metadata['data'] ?? {})['@_compression'];
-        this.visible = metadata['@_visible'] === undefined || metadata['@_visible'] !== '0';
-        this.offsetX = parseInt(metadata['@_offsetx'] ?? '0');
-        this.offsetY = parseInt(metadata['@_offsety'] ?? '0');
+        const meta = metadata?.[':@'] ?? {};
+        this.name = meta['@_name'] ?? '';
+        this.id = parseInt(meta['@_id'] ?? '0');
+        this.width = parseInt(meta['@_width'] ?? '0');
+        this.height = parseInt(meta['@_height'] ?? '0');
+        this.encoding = layer?.[':@']?.['@_encoding'];
+        this.compression = layer?.[':@']?.['@_compression'];
+        this.visible = meta['@_visible'] === undefined || meta['@_visible'] !== '0';
+        this.offsetX = parseInt(meta['@_offsetx'] ?? '0');
+        this.offsetY = parseInt(meta['@_offsety'] ?? '0');
 
-        parseData(this.encoding, this.compression, (metadata['data'] ?? {})['#text'], this.width)
+        const dataArr = Array.isArray(layer?.data) ? layer.data : [];
+        const dataText = dataArr[0]?.['#text'] ?? '';
+        parseData(this.encoding, this.compression, dataText, this.width)
             .then(value => {
                 this.tiles = value;
             });

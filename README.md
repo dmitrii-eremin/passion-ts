@@ -41,6 +41,7 @@ The latest documentation is always available in this readme file, or you can bro
   * [Tween](./docs/stdlib/tween.md) — Tweening and Easing Utility API Reference
   * [Position](./docs/stdlib/position.md) — 2D position utility class.
   * [Rect](./docs/stdlib/rect.md) — 2D rectangle utility class.
+  * [Tiled](./docs/stdlib/tiled.md) — Load and render .tmx tilemaps (Tiled).
 
 Passion also includes a standard library (stdlib) with additional helper classes, as listed above, to further support your game development needs.
 
