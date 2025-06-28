@@ -37,13 +37,12 @@ export class Map implements IMap {
         const folder = filename.substring(0, filename.lastIndexOf('/'));
 
         const content = await loadXmlFile(filename);
-        this.parseMetaData(content);
-        this.parseTilesets(folder, content);
-        this.parseTileLayers(content);
-        this.parseObjectGroups(content);
-        this.parseImageLayers(this.data, folder, content);
+        if (content === undefined) {
+            return;
+        }
 
-        this.collectDrawableLayers();
+        this.parseMetaData(content);
+        this.parseLayers(folder, content);
     }
 
     update(dt: number) {
@@ -89,90 +88,34 @@ export class Map implements IMap {
         return this.tilesets.find(item => item.containsGid(gid));
     }
 
-    private parseTileLayers(content: any) {
-        const mapMetaData = content.map ?? {};
-        let layers = mapMetaData['layer'];
-        if (!layers) {
-            return;
-        }
-        if (!Array.isArray(layers)) {
-            layers = [layers];
-        }
-
-        for (const item of layers) {
-            const layer = new Layer(this.tileWidth, this.tileHeight, item);
-            this.tileLayers.push(layer);
-        }
-    }
-
-    private parseObjectGroups(content: any) {
-        const mapMetaData = content.map ?? {};
-        let objectGroups = mapMetaData['objectgroup'];
-        if (!objectGroups) {
-            return;
-        }
-        if (!Array.isArray(objectGroups)) {
-            objectGroups = [objectGroups];
-        }
-
-        for (const item of objectGroups) {
-            const objectGroup = new ObjectGroup(item);
-            this.objectGroups.push(objectGroup);
-        }
-    }
-
-    private parseImageLayers(data: PassionData, folder: string, content: any) {
-        const mapMetaData = content.map ?? {};
-        let imageLayers = mapMetaData['imagelayer'];
-        if (!imageLayers) {
-            return;
-        }
-        if (!Array.isArray(imageLayers)) {
-            imageLayers = [imageLayers];
-        }
-
-        for (const item of imageLayers) {
-            const imageLayer = new ImageLayer(data, folder, item);
-            this.imageLayers.push(imageLayer);
-        }
-    }
-
-    private collectDrawableLayers() {
-        const ids = [...this.tileLayers.map(v => v.id), ...this.objectGroups.map(v => v.id), ...this.imageLayers.map(v => v.id)].sort();
-        this.layers = (ids.map(id => this.getDrawableObjectById(id)).filter(i => i)) as IDrawableLayer[];
-    }
-
-    private getDrawableObjectById(id: number): IDrawableLayer | undefined {
-        let layer: IDrawableLayer | undefined = this.tileLayers.find(v => v.id === id);
-        if (layer) {
-            return layer;
-        }
-        layer = this.objectGroups.find(v => v.id === id);
-        if (layer) {
-            return layer;
-        }
-
-        return this.imageLayers.find(v => v.id === id);
-    }
-
-    private parseTilesets(folder: string, content: any) {
-        const mapMetaData = content.map ?? {};
-        let tilesets = mapMetaData['tileset'];
-        if (!tilesets) {
-            return;
-        }
-        if (!Array.isArray(tilesets)) {
-            tilesets = [tilesets];
-        }
-
-        for (const item of tilesets) {
-            const tileset = new Tileset(this.data, folder, item);
-            this.tilesets.push(tileset);
+    private parseLayers(folder: string, content: any) {
+        const mapMetaData = content?.map ?? [];
+        if (!Array.isArray(mapMetaData)) return;
+        for (const node of mapMetaData) {
+            if (node?.tileset) {
+                const tileset = new Tileset(this.data, folder, node);
+                this.tilesets.push(tileset);
+            }
+            else if (node?.imagelayer) {
+                const layer = new ImageLayer(this.data, folder, node);
+                this.imageLayers.push(layer);
+                this.layers.push(layer);
+            }
+            else if (node?.layer) {
+                const layer = new Layer(this.tileWidth, this.tileHeight, node);
+                this.tileLayers.push(layer);
+                this.layers.push(layer);
+            }
+            else if (node?.objectgroup) {
+                const layer = new ObjectGroup(node);
+                this.objectGroups.push(layer);
+                this.layers.push(layer);
+            }
         }
     }
 
     private parseMetaData(content: any) {
-        const mapMetaData = content.map ?? {};
+        const mapMetaData = content?.[':@'] ?? {};
         this.version = mapMetaData['@_version'] ?? '';
         this.tiledversion = mapMetaData['@_tiledversion'] ?? '';
         this.orientation = (mapMetaData['@_orientation'] ?? 'orthogonal') as Orientation;
@@ -192,6 +135,9 @@ async function loadXmlFile(filename: string): Promise<any> {
 
     const parser: XMLParser = new XMLParser({
         ignoreAttributes: false,
+        preserveOrder: true,
     });
-    return parser.parse(content);
+
+    const object = parser.parse(content);
+    return object.find((x: any) => x.map);
 }

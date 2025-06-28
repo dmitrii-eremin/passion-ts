@@ -14,9 +14,10 @@ export class Image implements IImage {
     constructor(data: PassionData, folder: string, metadata: any) {
         this.data = data;
 
-        this.source = metadata['@_source'] ?? '';
-        this.width = parseInt(metadata['@_width'] ?? '0');
-        this.height = parseInt(metadata['@_height'] ?? '0');
+        const meta = metadata?.[':@'] ?? {};
+        this.source = meta['@_source'] ?? '';
+        this.width = parseInt(meta['@_width'] ?? '0');
+        this.height = parseInt(meta['@_height'] ?? '0');
 
         this.filename = `${folder}/${this.source}`;
         this.image = new PassionImage(this.filename);

@@ -29,6 +29,7 @@ The `Passion` instance exposes the following subsystems as properties:
 - **math**: [`IMath`](./math.md) — Math helpers, random number generation, and Perlin noise utilities.
 - **audio**: [`IAudio`](./audio.md) — Controls sound playback, volume, and speed.
 - **network**: [`INetwork`](./network.md) — WebSocket networking for multiplayer and online features.
+- **tiled**: [`ITiled`](../stdlib/tiled.md) — Tiled map loading and rendering for `.tmx` maps created with the Tiled editor.
 
 ## Event Handling
 

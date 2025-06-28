@@ -17,13 +17,15 @@ export class ImageLayer implements IImageLayer {
 
     constructor(data: PassionData, folder: string, metadata: any) {
         this.data = data;
-        this.name = metadata['@_name'] ?? '';
-        this.id = parseInt(metadata['@_id'] ?? '0');
-        this.visible = metadata['@_visible'] === undefined || metadata['@_visible'] !== '0';
-        this.offsetX = parseInt(metadata['@_offsetx'] ?? '0');
-        this.offsetY = parseInt(metadata['@_offsety'] ?? '0');
+        const meta = metadata?.[':@'] ?? {};
+        this.name = meta['@_name'] ?? '';
+        this.id = parseInt(meta['@_id'] ?? '0');
+        this.visible = meta['@_visible'] === undefined || meta['@_visible'] !== '0';
+        this.offsetX = parseInt(meta['@_offsetx'] ?? '0');
+        this.offsetY = parseInt(meta['@_offsety'] ?? '0');
 
-        this.image = new Image(this.data, folder, metadata['image']);
+        const imageLayerArr = Array.isArray(metadata?.imagelayer) ? metadata.imagelayer : [];
+        this.image = new Image(this.data, folder, imageLayerArr[0] ?? {});
     }
 
     setCustomDrawCallback(cb: CustomDrawCallback | undefined) {

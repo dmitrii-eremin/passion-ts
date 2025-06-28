@@ -66,29 +66,26 @@ export class Tileset implements ITileset {
     constructor(data: PassionData, folder: string, metadata: any) {
         this.data = data;
 
-        this.name = metadata['@_name'] ?? '';
-        this.firstGid = parseInt(metadata['@_firstgid'] ?? '0');
-        this.tileWidth = parseInt(metadata['@_tilewidth'] ?? '0');
-        this.tileHeight = parseInt(metadata['@_tileheight'] ?? '0');
-        this.tileCount = parseInt(metadata['@_tilecount'] ?? '0');
-        this.columns = parseInt(metadata['@_columns'] ?? '0');
+        const meta = metadata?.[':@'] ?? {};
+        this.name = meta['@_name'] ?? '';
+        this.firstGid = parseInt(meta['@_firstgid'] ?? '0');
+        this.tileWidth = parseInt(meta['@_tilewidth'] ?? '0');
+        this.tileHeight = parseInt(meta['@_tileheight'] ?? '0');
+        this.tileCount = parseInt(meta['@_tilecount'] ?? '0');
+        this.columns = parseInt(meta['@_columns'] ?? '0');
 
-        this.image = new Image(this.data, folder, metadata.image ?? {});
-        this.animations = this.parseAnimations(metadata);
+        const tilesetArr = Array.isArray(metadata?.tileset) ? metadata.tileset : [];
+        const imageMeta = tilesetArr.find((t: any) => t?.image) ?? {};
+        this.image = new Image(this.data, folder, imageMeta);
+        this.animations = this.parseAnimations(tilesetArr.filter((t: any) => t?.tile));
         this.animationCounters = this.animations.reduce<Record<number, TileGidAnimationCounter>>((acc, a) => {
             acc[a.gid] = new TileGidAnimationCounter(a);
             return acc;
         }, {});
     }
-
-    private parseAnimations(metadata: any): ITileAnimation[] {
-        let tiles = metadata['tile'];
-        if (tiles === undefined) {
-            return [];
-        }
-        if (!Array.isArray(tiles)) {
-            tiles = [tiles];
-        }
+    
+    private parseAnimations(tiles: any): ITileAnimation[] {
+        if (!Array.isArray(tiles)) return [];
         return (tiles as any[]).map(t => new TileAnimation(t, this.firstGid));
     }
 

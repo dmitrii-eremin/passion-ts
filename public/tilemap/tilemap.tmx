@@ -42,7 +42,7 @@
  <objectgroup id="6" name="scene"/>
  <objectgroup id="3" name="objects">
   <object id="1" type="Armor" gid="51" x="224" y="80" width="16" height="16"/>
-  <object id="3" name="Player" type="Character" gid="59" x="32" y="64" width="16" height="16">
+  <object id="3" name="Player" type="Character" gid="59" x="40.6372" y="119.203" width="16" height="16">
    <properties>
     <property name="foreground" type="color" value="#ff56c55e"/>
     <property name="hidden" type="bool" value="true"/>

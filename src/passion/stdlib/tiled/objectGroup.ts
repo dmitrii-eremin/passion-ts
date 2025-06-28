@@ -13,13 +13,15 @@ export class ObjectGroup implements IObjectGroup {
     customDrawCallback: CustomDrawCallback | undefined;
 
     constructor(metadata: any) {
-        this.name = metadata['@_name'] ?? '';
-        this.id = parseInt(metadata['@_id'] ?? '0');
-        this.visible = metadata['@_visible'] === undefined || metadata['@_visible'] !== '0';
-        this.offsetX = parseInt(metadata['@_offsetx'] ?? '0');
-        this.offsetY = parseInt(metadata['@_offsety'] ?? '0');
+        const meta = metadata?.[':@'] ?? {};
+        this.name = meta['@_name'] ?? '';
+        this.id = parseInt(meta['@_id'] ?? '0');
+        this.visible = meta['@_visible'] === undefined || meta['@_visible'] !== '0';
+        this.offsetX = parseInt(meta['@_offsetx'] ?? '0');
+        this.offsetY = parseInt(meta['@_offsety'] ?? '0');
 
-        this.parseObjects(metadata);
+        const objectsArr = metadata?.objectgroup ?? [];
+        this.parseObjects(objectsArr);
     }
 
     setCustomDrawCallback(cb: CustomDrawCallback | undefined) {
@@ -44,18 +46,10 @@ export class ObjectGroup implements IObjectGroup {
         }
     }
 
-    private parseObjects(metadata: any) {
-        let objectsMetaData = metadata['object'];
-        if (!objectsMetaData) {
-            return;
-        }
-
-        if (!Array.isArray(objectsMetaData)) {
-            objectsMetaData = [objectsMetaData];
-        }
-
-        for (const metadata of objectsMetaData) {
-            this.objects.push(new Object(metadata));
+    private parseObjects(objects: any) {
+        if (!Array.isArray(objects)) return;
+        for (const objectMetaData of objects) {
+            this.objects.push(new Object(objectMetaData));
         }
     }
 }

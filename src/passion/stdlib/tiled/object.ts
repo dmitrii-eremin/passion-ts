@@ -17,18 +17,21 @@ export class Object implements IObject {
     }
 
     constructor(metadata: any) {
-        this.id = parseInt(metadata['@_id'] ?? '0');
-        this.gid = parseInt(metadata['@_gid'] ?? '0');
-        this.x = parseInt(metadata['@_x'] ?? '0');
-        this.y = parseInt(metadata['@_y'] ?? '0');
-        this.width = parseInt(metadata['@_width'] ?? '0');
-        this.height = parseInt(metadata['@_height'] ?? '0');
-        this.name = metadata['@_name'] ?? '';
-        this.type = metadata['@_type'] ?? '';
+        const meta = metadata?.[':@'] ?? {};
+        this.id = parseInt(meta['@_id'] ?? '0');
+        this.gid = parseInt(meta['@_gid'] ?? '0');
+        this.x = parseInt(meta['@_x'] ?? '0');
+        this.y = parseInt(meta['@_y'] ?? '0');
+        this.width = parseInt(meta['@_width'] ?? '0');
+        this.height = parseInt(meta['@_height'] ?? '0');
+        this.name = meta['@_name'] ?? '';
+        this.type = meta['@_type'] ?? '';
 
-        if (metadata.properties) {
-            const properties = Array.isArray(metadata.properties.property) ? metadata.properties.property : [metadata.properties.property];
-            for (const property of properties) {
+        // Defensive: handle missing or malformed object/property arrays
+        const objectsArr = Array.isArray(metadata?.object) ? metadata.object : [];
+        for (const object of objectsArr) {
+            const propertiesArr = Array.isArray(object?.properties) ? object.properties : [];
+            for (const property of propertiesArr) {
                 this.addProperty(property);
             }
         }
@@ -43,20 +46,20 @@ export class Object implements IObject {
     }
 
     private addProperty(property: any) {
-        const name = property['@_name'];
+        const name = property[':@']['@_name'];
         let value: ObjectProperty = 0;
 
-        if (property['@_type'] === 'int') {
-            value = parseInt(property['@_value']);
+        if (property[':@']['@_type'] === 'int') {
+            value = parseInt(property[':@']['@_value']);
         }
-        else if (property['@_type'] === 'float') {
-            value = parseFloat(property['@_value']);
+        else if (property[':@']['@_type'] === 'float') {
+            value = parseFloat(property[':@']['@_value']);
         }
-        else if (property['@_type'] === 'bool') {
-            value = property['@_value'] === 'true';
+        else if (property[':@']['@_type'] === 'bool') {
+            value = property[':@']['@_value'] === 'true';
         }
         else {
-            value = property['@_value'];
+            value = property[':@']['@_value'];
         }
 
         this.properties[name] = value;
