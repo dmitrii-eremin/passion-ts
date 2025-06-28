@@ -8,6 +8,7 @@ import { type IAudio, Audio } from './audio';
 import { type INetwork, Network } from './network';
 import type { Key } from './key';
 import { Tiled, type ITiled } from './stdlib/tiled';
+import { PassionStorage, type IStorage } from './storage';
 
 export class Passion {
     private data: PassionData = new PassionData();
@@ -19,6 +20,7 @@ export class Passion {
     math: IMath;
     audio: IAudio;
     network: INetwork;
+    storage: IStorage;
 
     readonly tiled: ITiled;
 
@@ -34,6 +36,7 @@ export class Passion {
             this.data.math?.onBeforeAll(dt);
             this.data.audio?.onBeforeAll(dt);
             this.data.network?.onBeforeAll(dt);
+            this.data.storage?.onBeforeAll(dt);
         };
 
         const onAfterAll = (dt: number) => {
@@ -44,6 +47,7 @@ export class Passion {
             this.data.math?.onAfterAll(dt);
             this.data.audio?.onAfterAll(dt);
             this.data.network?.onAfterAll(dt);
+            this.data.storage?.onAfterAll(dt);
         };
 
         this.data.system = new System(this.data, onBeforeAll, onAfterAll);
@@ -53,6 +57,7 @@ export class Passion {
         this.data.math = new PassionMath();
         this.data.audio = new Audio(this.data);
         this.data.network = new Network(this.data);
+        this.data.storage = new PassionStorage();
 
         this.system = this.data.system;
         this.resource = this.data.resource;
@@ -61,6 +66,7 @@ export class Passion {
         this.math = this.data.math;
         this.audio = this.data.audio;
         this.network = this.data.network;
+        this.storage = this.data.storage;
 
         // Some extra components
         this.tiled = new Tiled(this.data);
