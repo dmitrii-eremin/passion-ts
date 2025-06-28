@@ -36,6 +36,7 @@ The latest documentation is always available in this readme file, or you can bro
   * [IMath](./docs/passion/math.md) — Math helpers, random numbers, and noise generation.
   * [IAudio](./docs/passion/audio.md) — Sound playback and audio control.
   * [INetwork](./docs/passion/network.md) — WebSocket networking for multiplayer and online games.
+  * [IStorage](./docs/passion/storage.md) — Unified API for LocalStorage, SessionStorage, Cookies, and IndexedDB.
 * StdLib - a set of useful helpers to extend the main engine
   * [Animation](./docs/stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
   * [Tween](./docs/stdlib/tween.md) — Tweening and Easing Utility API Reference

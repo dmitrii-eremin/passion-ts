@@ -36,11 +36,13 @@ The latest documentation is always available in this readme file, or you can bro
   * [IMath](./passion/math.md) — Math helpers, random numbers, and noise generation.
   * [IAudio](./passion/audio.md) — Sound playback and audio control.
   * [INetwork](./passion/network.md) — WebSocket networking for multiplayer and online games.
+  * [IStorage](./passion/storage.md) — Unified API for LocalStorage, SessionStorage, Cookies, and IndexedDB.
 * StdLib - a set of useful helpers to extend the main engine
   * [Animation](./stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
   * [Tween](./stdlib/tween.md) — Tweening and Easing Utility API Reference
   * [Position](./stdlib/position.md) — 2D position utility class.
   * [Rect](./stdlib/rect.md) — 2D rectangle utility class.
+  * [Tiled](./stdlib/tiled.md) — Load and render .tmx tilemaps (Tiled).
 
 Passion also includes a standard library (stdlib) with additional helper classes, as listed above, to further support your game development needs.
 
