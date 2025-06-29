@@ -89,5 +89,22 @@ Make sure your HTML contains a canvas element with id `app`:
 
 This will display a window, clear the screen, draw some text, and blit an image. You can expand on this by using the full API described below.
 
+# Commercial Use and Royalties
+
+Passion is free to use for personal, educational, and non-commercial projects. If you develop a game using this engine and your total revenue from that game exceeds 3000€ (three thousand euros), a royalty fee of 5% applies to the amount above this threshold.
+
+**How does it work?**
+- The first 3000€ you earn from your game is royalty-free.
+- For any revenue above 3000€, you owe a 5% royalty on the excess amount.
+
+**Example:**
+If you earned 5000€ with a game you developed using Passion, the calculation would be:
+
+- First 3000€: free
+- Remaining: 5000€ - 3000€ = 2000€
+- Royalty owed: 2000€ × 5% = 100€
+
+If you have questions about royalties or need to arrange payment, please contact me by email.
+
 # License
 MIT
