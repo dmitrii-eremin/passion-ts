@@ -25,7 +25,7 @@ export class Example01 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(200, 140, 'Hello, passion!');
+        this.passion.system.init(200, 140, 'Example 01: Hello, passion!');
         this.imageId = this.passion.resource.loadImage('/examples/hero.png');
     }
 
