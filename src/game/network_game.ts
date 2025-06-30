@@ -240,7 +240,7 @@ class Ninja {
         }
 
         this.passion.graphics.text(Math.ceil(this.x) - this.nameWidth / 2, Math.ceil(this.y) - 8, this.name, 7);
-        this.animation.draw(this.passion, Math.ceil(this.x), Math.ceil(this.y), this.spriteId);
+        this.animation.draw(this.passion, this.x, this.y, this.spriteId);
     }
 
     move(dx: number, dy: number, dt: number) {

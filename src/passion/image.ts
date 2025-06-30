@@ -30,6 +30,9 @@ export class PassionImage {
     ) {
         if (!this.isReady) return;
 
+        x = Math.ceil(x);
+        y = Math.ceil(y);
+
         // Save context state
         canvas.save();
 

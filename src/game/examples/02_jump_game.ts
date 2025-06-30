@@ -22,6 +22,12 @@ class Player implements MaterialObject {
     private speedY: number = 0;
 
     private readonly jumpSpeed = 8;
+    private _isHurted = false;
+
+    private hurtTimer: number = 0;
+    private readonly blinkLimit: number = 0.15;
+    private blinkTimer: number = 0;
+    private isVisible: boolean = true;
 
     pos: Position = new Position(30, 45);
     size: Position = new Position(16, 16);
@@ -50,10 +56,28 @@ class Player implements MaterialObject {
             this.pos.y = FLOOR_LEVEL - this.size.y;
             this.speedY = 0;
         }
+
+        if (this.isHurted) {
+            this.blinkTimer -= dt;
+            if (this.blinkTimer <= 0) {
+                this.blinkTimer += this.blinkLimit;
+                this.isVisible = !this.isVisible;
+            }
+
+            this.hurtTimer -= dt;
+            if (this.hurtTimer <= 0) {
+                this.hurtTimer = 0;
+                this._isHurted = false;
+                this.isVisible = true;
+            }
+        }
     }
 
     draw() {
-        this.animation.draw(this.passion, Math.ceil(this.pos.x), Math.ceil(this.pos.y), this.imageId);
+        if (!this.isVisible) {
+            return;
+        }
+        this.animation.draw(this.passion, this.pos.x, this.pos.y, this.imageId);
     }
 
     isCollidedWith(obj: MaterialObject): boolean {
@@ -63,6 +87,21 @@ class Player implements MaterialObject {
             this.pos.y < obj.pos.y + obj.size.y &&
             this.pos.y + this.size.y > obj.pos.y
         );
+    }
+
+    get isHurted(): boolean {
+        return this._isHurted;
+    }
+
+    hurt() {
+        if (this._isHurted) {
+            return;
+        }
+
+        this.hurtTimer = 3;
+        this.speedY = -this.jumpSpeed;
+
+        this._isHurted = true;
     }
 }
 
@@ -87,7 +126,7 @@ class Background {
 
     draw() {
         for (let i = 0; i < 3; i++) {
-            this.passion.graphics.blt(Math.ceil(this.offset + i * this.width), Math.ceil(15), this.imageId, 0, 176, this.width, 128);
+            this.passion.graphics.blt(this.offset + i * this.width, 15, this.imageId, 0, 176, this.width, 128);
         }
     }
 }
@@ -113,7 +152,7 @@ class Ground {
 
     draw() {
         for (let i = 0; i < 6; i++) {
-            this.passion.graphics.blt(Math.ceil(this.offset + i * this.width), Math.ceil(FLOOR_LEVEL), this.imageId, 208, 64, this.width, 47);
+            this.passion.graphics.blt(this.offset + i * this.width, FLOOR_LEVEL, this.imageId, 208, 64, this.width, 47);
         }
     }
 }
@@ -165,7 +204,42 @@ class Coin implements MaterialObject {
     }
 
     draw() {
-        this.currentAnimation.draw(this.passion, Math.ceil(this.pos.x), Math.ceil(this.pos.y), this.imageId);
+        this.currentAnimation.draw(this.passion, this.pos.x, this.pos.y, this.imageId);
+    }
+}
+
+class Enemy implements MaterialObject {
+    private passion: Passion;
+    private imageId: string = '';
+
+    readonly score = 10;
+    size: Position = new Position(16, 32);
+    pos: Position;
+
+    private readonly speed = 25;
+
+    private animation: Animation;
+
+    constructor(passion: Passion, tilesImageId: string, x: number, y: number) {
+        this.passion = passion;
+        this.imageId = tilesImageId;
+        this.pos = new Position(x, y);
+
+        const grid = new AnimationGrid(this.size.x, this.size.y, 0, 16);
+        this.animation = new Animation(grid.range('12,11,10', '1'), 0.1);
+    }
+
+    get isDead(): boolean {
+        return this.pos.x + this.size.x < 0;
+    }
+
+    update(dt: number) {
+        this.animation.update(dt);
+        this.pos.x -= (this.speed + GROUND_SPEED) * dt;
+    }
+
+    draw() {
+        this.animation.draw(this.passion, this.pos.x, this.pos.y, this.imageId);
     }
 }
 
@@ -180,6 +254,7 @@ export class Example02 implements IGameExample {
     private background: Background | undefined;
     private ground: Ground | undefined;
     private coins: Coin[] = [];
+    private enemies: Enemy[] = [];
 
     constructor(passion: Passion) {
         this.passion = passion;
@@ -190,6 +265,7 @@ export class Example02 implements IGameExample {
         this.background?.update(dt);
         this.ground?.update(dt);
         this.updateCoins(dt);
+        this.updateEnemies(dt);
     }
 
     draw(): void {
@@ -198,6 +274,7 @@ export class Example02 implements IGameExample {
         this.background?.draw();
         this.ground?.draw();
         this.coins.forEach(c => c.draw());
+        this.enemies?.forEach(e => e.draw());
         this.player?.draw();
 
         this.drawScore();
@@ -210,8 +287,6 @@ export class Example02 implements IGameExample {
         this.player = new Player(this.passion);
         this.background = new Background(this.passion, this.tilesId);
         this.ground = new Ground(this.passion, this.tilesId);
-
-        this.coins.push(new Coin(this.passion, this.tilesId, 100, 100));
     }
 
     onLeave() {}
@@ -233,7 +308,26 @@ export class Example02 implements IGameExample {
         });
         this.coins = this.coins.filter(c => !c.isDead);
         if (this.coins.length === 0) {
-            this.coins.push(new Coin(this.passion, this.tilesId, this.passion.math.rndi(230, 360), this.passion.math.rndi(32, FLOOR_LEVEL - 16)));
+            const start = this.passion.system.width + 10;
+            const end = start + this.passion.system.width;
+            this.coins.push(new Coin(this.passion, this.tilesId, this.passion.math.rndi(start, end), this.passion.math.rndi(32, FLOOR_LEVEL - 16)));
+        }
+    }
+
+    private updateEnemies(dt: number) {
+        this.enemies.forEach(e => {
+            e.update(dt);
+            if (this.player?.isCollidedWith(e) && !this.player.isHurted) {
+                this.player.hurt();
+                this.score = Math.max(0, this.score - e.score);
+            }
+        });
+
+        this.enemies = this.enemies.filter(e => !e.isDead);
+        if (this.enemies.length === 0) {
+            const start = this.passion.system.width + 10;
+            const end = start + this.passion.system.width;
+            this.enemies.push(new Enemy(this.passion, this.tilesId, this.passion.math.rndi(start, end), FLOOR_LEVEL - 32));
         }
     }
 }
