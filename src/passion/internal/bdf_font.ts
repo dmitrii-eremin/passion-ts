@@ -64,6 +64,8 @@ export class BdfFont {
     }
 
     render(x: number, y: number, text: string, cb: BdfFontRenderCallback) {
+        x = Math.ceil(x);
+        y = Math.ceil(y);
         let cx = x;
         for (const ch of text) {
             const code = ch.charCodeAt(0);

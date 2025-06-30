@@ -65,7 +65,7 @@ class Cat {
     }
 
     draw() {
-        this.passion.graphics.blt(Math.ceil(this.pos.x), Math.ceil(this.pos.y), this.catId, 0, 0, 16, 16);
+        this.passion.graphics.blt(this.pos.x, this.pos.y, this.catId, 0, 0, 16, 16);
     }
 }
 
@@ -108,10 +108,10 @@ class Player {
 
     draw() {
         this.passion.graphics.rect(
-        Math.ceil(this.pos.x),
-        Math.ceil(this.pos.y),
-        Math.ceil(this.size.x),
-        Math.ceil(this.size.y),
+        this.pos.x,
+        this.pos.y,
+        this.size.x,
+        this.size.y,
         8);
     }
 

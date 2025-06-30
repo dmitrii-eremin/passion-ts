@@ -128,7 +128,8 @@ export class AnimationGrid {
         for (const part of range.split(',')) {
             if (part.includes('-')) {
                 const [start, end] = part.split('-').map(Number);
-                for (let i = start; i <= end; i++) result.push(i);
+                const delta = start < end ? 1 : -1;
+                for (let i = start; i <= end; i += delta) result.push(i);
             } else {
                 result.push(Number(part));
             }

@@ -68,7 +68,7 @@ export class Game {
     draw() {
         this.passion.graphics.cls(1);
         this.balls.forEach(ball => {
-            this.passion.graphics.circ(Math.ceil(ball.pos.x), Math.ceil(ball.pos.y), this.ballsRadius, ball.col);
+            this.passion.graphics.circ(ball.pos.x, ball.pos.y, this.ballsRadius, ball.col);
         });
 
         if (!this.started) {
