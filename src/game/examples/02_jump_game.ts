@@ -218,15 +218,12 @@ class Enemy implements MaterialObject {
 
     private readonly speed = 25;
 
-    private animation: Animation;
+    protected animation: Animation | undefined;
 
     constructor(passion: Passion, tilesImageId: string, x: number, y: number) {
         this.passion = passion;
         this.imageId = tilesImageId;
         this.pos = new Position(x, y);
-
-        const grid = new AnimationGrid(this.size.x, this.size.y, 0, 16);
-        this.animation = new Animation(grid.range('12,11,10', '1'), 0.1);
     }
 
     get isDead(): boolean {
@@ -234,12 +231,45 @@ class Enemy implements MaterialObject {
     }
 
     update(dt: number) {
-        this.animation.update(dt);
+        this.animation?.update(dt);
         this.pos.x -= (this.speed + GROUND_SPEED) * dt;
     }
 
     draw() {
-        this.animation.draw(this.passion, this.pos.x, this.pos.y, this.imageId);
+        this.animation?.draw(this.passion, this.pos.x, this.pos.y, this.imageId);
+    }
+}
+
+class CactusEnemy extends Enemy {
+    size: Position = new Position(16, 32);
+
+    constructor(passion: Passion, tilesImageId: string, x: number, y: number) {
+        super(passion, tilesImageId, x, y);
+
+        const grid = new AnimationGrid(this.size.x, this.size.y, 0, 16);
+        this.animation = new Animation(grid.range('12,11,10', '1'), 0.1);
+    }
+}
+
+class TurnipEnemy extends Enemy {
+    size: Position = new Position(16, 32);
+
+    constructor(passion: Passion, tilesImageId: string, x: number, y: number) {
+        super(passion, tilesImageId, x, y);
+
+        const grid = new AnimationGrid(this.size.x, this.size.y, 0, 16);
+        this.animation = new Animation(grid.range('7-9', '1'), 0.1);
+    }
+}
+
+class SlimeEnemy extends Enemy {
+    size: Position = new Position(16, 16);
+
+    constructor(passion: Passion, tilesImageId: string, x: number, y: number) {
+        super(passion, tilesImageId, x, y);
+
+        const grid = new AnimationGrid(this.size.x, this.size.y, 0, 0);
+        this.animation = new Animation(grid.range('7-9', '1'), 0.1);
     }
 }
 
@@ -327,7 +357,11 @@ export class Example02 implements IGameExample {
         if (this.enemies.length === 0) {
             const start = this.passion.system.width + 10;
             const end = start + this.passion.system.width;
-            this.enemies.push(new Enemy(this.passion, this.tilesId, this.passion.math.rndi(start, end), FLOOR_LEVEL - 32));
+            const enemyClasses = [CactusEnemy, TurnipEnemy, SlimeEnemy];
+            const EnemyClass = enemyClasses[this.passion.math.rndi(0, enemyClasses.length - 1)];
+            const enemy = new EnemyClass(this.passion, this.tilesId, this.passion.math.rndi(start, end), 0);
+            enemy.pos.y = FLOOR_LEVEL - enemy.size.y;
+            this.enemies.push(enemy);
         }
     }
 }
