@@ -1,6 +1,7 @@
 import type { Passion } from "../passion/passion";
 import { Example01 } from "./examples/01_hello_passion";
 import { Example02 } from "./examples/02_jump_game";
+import { Example03 } from "./examples/03_draw_api";
 import type { IGameExample } from "./examples/example";
 
 class Example {
@@ -25,12 +26,13 @@ export class Game {
         this.examples = [
             new Example('Hello, Passion!', new Example01(this.passion)),
             new Example('Jump game [credits for sprites: GrafxKid]', new Example02(this.passion)),
+            new Example('Draw API', new Example03(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');
 
-        this.currentExample = this.examples[1].example;
-        this.currentExample.onEnter();
+        //this.currentExample = this.examples[1].example;
+        //this.currentExample.onEnter();
     }
 
     update(dt: number) {
@@ -75,10 +77,10 @@ export class Game {
         let y = 24;
         for (const [index, example] of this.examples.entries()) {
             if (index === this.exampleIndex) {
-                this.passion.graphics.text(10, y, `>> ${index}: ${example.name} <<`, 7);
+                this.passion.graphics.text(10, y, `>> ${index + 1}: ${example.name} <<`, 7);
             }
             else {
-                this.passion.graphics.text(28, y, `${index}: ${example.name}`, 5);
+                this.passion.graphics.text(28, y, `${index + 1}: ${example.name}`, 5);
             }
             y += 12;
         }
