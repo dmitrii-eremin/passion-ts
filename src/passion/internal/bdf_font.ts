@@ -19,14 +19,19 @@ function parseBdf(bdfText: string): BdfFontData {
     let i = 0;
     let fontHeight = 0;
     let defaultWidth = 8;
+    let defaultXOffset = 0;
+    let defaultYOffset = 0;
+
     while (i < lines.length) {
         if (lines[i].startsWith('FONTBOUNDINGBOX')) {
-            let [, w, h] = lines[i].split(/\s+/);
+            let [w, h, xOffset, yOffset] = lines[i].split(/\s+/);
             defaultWidth = parseInt(w, 10);
             fontHeight = parseInt(h, 10);
+            defaultXOffset = parseInt(xOffset);
+            defaultYOffset = parseInt(yOffset);
         }
         if (lines[i].startsWith('STARTCHAR')) {
-            let encoding = 0, width = defaultWidth, height = fontHeight, xOffset = 0, yOffset = 0, bitmap: number[] = [];
+            let encoding = 0, width = defaultWidth, height = fontHeight, xOffset = defaultXOffset, yOffset = defaultYOffset, bitmap: number[] = [];
             while (!lines[i].startsWith('ENDCHAR')) {
                 if (lines[i].startsWith('ENCODING')) encoding = parseInt(lines[i].split(' ')[1], 10);
                 if (lines[i].startsWith('BBX')) {
