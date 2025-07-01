@@ -2,6 +2,8 @@ import type { Passion } from "../passion/passion";
 import { Example01 } from "./examples/01_hello_passion";
 import { Example02 } from "./examples/02_jump_game";
 import { Example03 } from "./examples/03_draw_api";
+import { Example04 } from "./examples/04_font_api";
+import { ExampleCredits } from "./examples/credits";
 import type { IGameExample } from "./examples/example";
 
 class Example {
@@ -24,9 +26,11 @@ export class Game {
     constructor(passion: Passion) {
         this.passion = passion;
         this.examples = [
+            new Example('Credits', new ExampleCredits(this.passion)),
             new Example('Hello, Passion!', new Example01(this.passion)),
-            new Example('Jump game [credits for sprites: GrafxKid]', new Example02(this.passion)),
+            new Example('Jump game', new Example02(this.passion)),
             new Example('Draw API', new Example03(this.passion)),
+            new Example('Custom fonts', new Example04(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');
