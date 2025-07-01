@@ -28,6 +28,12 @@ Loads a sound from the specified path and returns a unique sound index for later
 - **path**: `string` — The path or URL to the sound file (e.g., `'./sounds/jump.wav'`).
 - **returns**: `SoundIndex` — A unique index representing the loaded sound.
 
+##### `loadFont(fontData: string): FontIndex`
+Loads a bitmap font from a BDF font string and returns a unique font index for later reference.
+
+- **fontData**: `string` — The contents of a BDF font file as a string.
+- **returns**: `FontIndex` — A unique index representing the loaded font.
+
 ---
 
 ## Example Usage
@@ -36,9 +42,13 @@ Loads a sound from the specified path and returns a unique sound index for later
 ```typescript
 const playerImg: ImageIndex = passion.resource.loadImage('./images/player.png');
 const jumpSnd: SoundIndex = passion.resource.loadSound('./sounds/jump.wav');
+const font: FontIndex = passion.resource.loadFont(bdfFontString);
 
 function draw(): void {
     passion.graphics.blt(10, 10, playerImg, 0, 0, 16, 16);
+
+    passion.graphics.font(font);
+    passion.graphics.text(10, 30, 'Hello');
 }
 
 function onJump(): void {

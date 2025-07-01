@@ -9,14 +9,16 @@ import { Sound } from './sound';
 import { Network } from './network';
 
 import { WSClient } from './internal/ws_client';
-import type { ImageIndex, SoundIndex, WebSocketIndex } from './constants';
+import type { ImageIndex, FontIndex, SoundIndex, WebSocketIndex } from './constants';
 import type { PassionStorage } from './storage';
+import type { BdfFont } from './internal/bdf_font';
 
 export class PassionData {
     public canvas: HTMLCanvasElement | null = null;
     public context: CanvasRenderingContext2D | null = null;
 
     public images: Map<ImageIndex, PassionImage> = new Map<ImageIndex, PassionImage>();
+    public fonts: Map<FontIndex, BdfFont> = new Map<FontIndex, BdfFont>();
     public sounds: Map<SoundIndex, Sound> = new Map<SoundIndex, Sound>();
     public sockets: Map<WebSocketIndex, WSClient> = new Map<WebSocketIndex, WSClient>();
 
