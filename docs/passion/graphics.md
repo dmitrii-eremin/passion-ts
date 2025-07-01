@@ -40,9 +40,9 @@ Sets the current color palette.
 - **colors**: `string[]` *(optional)* — An array of color hex strings. If omitted, resets to the default palette.
 - **returns**: `void`
 
-##### `font(bdfFontData?: string): void`
+##### `font(fontIndex?: FontIndex): void`
 Sets the current font for text rendering.
-- **bdfFontData**: `string` *(optional)* — BDF font data as a string. If omitted, uses the default font.
+- **fontIndex**: `FontIndex` *(optional)* — BDF font index loaded by passion.resource.loadFont. If omitted, uses the default font.
 - **returns**: `void`
 
 ##### `cls(col: Color): void`

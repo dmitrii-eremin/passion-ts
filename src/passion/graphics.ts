@@ -1,4 +1,4 @@
-import type { ImageIndex } from "./constants";
+import type { FontIndex, ImageIndex } from "./constants";
 import { type Color } from "./constants";
 import type { PassionData } from "./data";
 import { PassionImage } from "./image";
@@ -14,7 +14,7 @@ export interface IGraphics {
     clip(left?: number, top?: number, width?: number, height?: number): void;
 
     pal(colors?: string[]): void;
-    font(bdfFontData?: string): void;
+    font(fontIndex?: FontIndex): void;
 
     cls(col: Color): void;
 
@@ -43,12 +43,13 @@ export interface IGraphics {
 
 export class Graphics implements IGraphics, SubSystem {
     private data: PassionData;
-    private bdfFont: BdfFont;
     private palette: Palette = new Palette();
+
+    private defaultFont?: FontIndex;
+    private currentFont?: FontIndex;
 
     constructor(data: PassionData) {
         this.data = data;
-        this.bdfFont = new BdfFont(DefaultBdfFont);
     }
 
     onBeforeAll(_dt: number) {}
@@ -91,8 +92,15 @@ export class Graphics implements IGraphics, SubSystem {
         this.palette = new Palette(colors);
     }
 
-    font(bdfFontData?: string) {
-        this.bdfFont = new BdfFont(bdfFontData ?? DefaultBdfFont);
+    font(fontIndex?: FontIndex) {
+        if (fontIndex === undefined) {
+            if (this.defaultFont === undefined) {
+                this.defaultFont = this.data.resource?.loadFont(DefaultBdfFont);
+            }
+            this.currentFont = this.defaultFont;
+        } else {
+            this.currentFont = fontIndex;
+        }
     }
 
     cls(col: Color) {
@@ -346,11 +354,11 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     text(x: number, y: number, text: string, col: Color) {
-        if (!this.data.isReady()) {
+        if (!this.data.isReady() || !this.currentFont) {
             return;
         }
-        
-        this.bdfFont.render(x, y, text, (x: number, y: number) => {
+
+        this.data.fonts.get(this.currentFont)?.render(x, y, text, (x: number, y: number) => {
             this.pset(x, y, col);
         });
     }

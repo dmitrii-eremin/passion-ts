@@ -29,7 +29,7 @@ The latest documentation is always available in this readme file, or you can bro
 
 * [Passion](./passion/passion.md) — the entry point for all API functions in the engine.
   * [ISystem](./passion/system.md) — Core game loop, window, and timing management.
-  * [IResource](./passion/resource.md) — Image and sound loading and resource management.
+  * [IResource](./passion/resource.md) — Image, sound, and font loading and resource management.
   * [IGraphics](./passion/graphics.md) — Drawing, palette, and rendering functions for 2D graphics.
   * [IInput](./passion/input.md) — Keyboard, mouse, and touch input handling.
     * [IKeys](./passion/keys.md) — Key codes and keyboard mapping reference.
