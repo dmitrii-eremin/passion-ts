@@ -23,6 +23,10 @@ export class Position {
         return new Position(this.x + other.x, this.y + other.y);
     }
 
+    substract(other: Position): Position {
+        return new Position(this.x - other.x, this.y - other.y);
+    }
+
     multiple(num: number): Position {
         return new Position(num * this.x, num * this.y);
     }
