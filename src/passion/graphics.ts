@@ -2,7 +2,6 @@ import type { FontIndex, ImageIndex } from "./constants";
 import { type Color } from "./constants";
 import type { PassionData } from "./data";
 import { PassionImage } from "./image";
-import { BdfFont } from "./internal/bdf_font";
 import { Palette } from "./internal/palette";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
 import type { SubSystem } from "./subsystem";
