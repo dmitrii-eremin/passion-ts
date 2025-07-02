@@ -5,7 +5,7 @@ export class ExampleCredits implements IGameExample {
     private passion: Passion;
     private lines = [
         'Code: Dmitrii Eremin',
-        'Example 02 sprites: GrafxKid',
+        'Jump game sprites: GrafxKid',
         'Assets: OpenGameArt community'
     ];
 
