@@ -5,6 +5,7 @@ import { Example03 } from "./examples/03_draw_api";
 import { Example04 } from "./examples/04_font_api";
 import { Example05 } from "./examples/05_perlin_noise";
 import { Example06 } from "./examples/06_snake_game";
+import { Example07 } from "./examples/07_color_palette";
 import { ExampleCredits } from "./examples/credits";
 import type { IGameExample } from "./examples/example";
 
@@ -35,6 +36,7 @@ export class Game {
             new Example('Custom fonts', new Example04(this.passion)),
             new Example('Perlin noise', new Example05(this.passion)),
             new Example('Snake game', new Example06(this.passion)),
+            new Example('Color palette', new Example07(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');

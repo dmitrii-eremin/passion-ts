@@ -17,6 +17,10 @@ export class Palette {
         return this.colors.length;
     }
 
+    get allColors(): string[] {
+        return [...this.colors];
+    }
+
     replaceColor(col: Color, color: string) {
         if (typeof col !== 'number') {
             return;

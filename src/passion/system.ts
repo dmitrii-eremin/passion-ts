@@ -52,6 +52,7 @@ export class System implements ISystem, SubSystem {
         this.data.canvas!.height = height;
         this.data.displayScale = displayScale;
         this.data?.graphics?.font();
+        this.data?.graphics?.pal();
         this.data.input?.mouse(true);
     }
 
