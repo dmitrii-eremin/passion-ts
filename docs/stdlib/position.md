@@ -43,6 +43,20 @@ Returns a new `Position` scaled by the given number.
 - **num**: `number` — The scale factor.
 - **returns**: `Position` — The scaled position.
 
+##### `apply(fn: (val: number) => number): Position`
+Returns a new `Position` with the function `fn` applied to both x and y coordinates.
+- **fn**: `(val: number) => number` — The function to apply to each coordinate.
+- **returns**: `Position` — The resulting position.
+
+##### `clone(): Position`
+Returns a new `Position` with the same coordinates as this one.
+- **returns**: `Position` — The cloned position.
+
+##### `substract(other: Position): Position`
+Returns a new `Position` that is the difference between this position and another.
+- **other**: `Position` — The position to subtract.
+- **returns**: `Position` — The resulting position.
+
 #### Static Methods
 
 ##### `fromPosition(pos: Position): Position`
