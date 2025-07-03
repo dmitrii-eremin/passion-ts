@@ -135,7 +135,7 @@ export class Graphics implements IGraphics, SubSystem {
 
         const ctx = this.data.context!;
         ctx.fillStyle = this.palette.getColor(col);
-        ctx.fillRect(x, y, 1, 1);
+        ctx.fillRect(Math.ceil(x), Math.ceil(y), 1, 1);
     }
 
     line(x1: number, y1: number, x2: number, y2: number, col: Color) {

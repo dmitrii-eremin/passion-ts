@@ -7,6 +7,14 @@ export class Position {
         this.y = y;
     }
 
+    apply(fn: (val: number) => number): Position {
+        return new Position(fn(this.x), fn(this.y));
+    }
+
+    clone(): Position {
+        return new Position(this.x, this.y);
+    }
+
     get length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
