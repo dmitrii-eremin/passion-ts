@@ -12,7 +12,7 @@ export interface IGraphics {
     camera(x?: number, y?: number): void;
     clip(left?: number, top?: number, width?: number, height?: number): void;
 
-    pal(colors?: string[]): void;
+    pal(colors?: string[]): string[];
     font(fontIndex?: FontIndex): void;
 
     cls(col: Color): void;
@@ -87,8 +87,9 @@ export class Graphics implements IGraphics, SubSystem {
         }
     }
 
-    pal(colors?: string[]) {
+    pal(colors?: string[]): string[] {
         this.palette = new Palette(colors);
+        return this.palette.allColors;
     }
 
     font(fontIndex?: FontIndex) {
