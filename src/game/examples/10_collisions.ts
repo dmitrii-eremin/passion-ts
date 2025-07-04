@@ -83,7 +83,7 @@ class Body {
 
 export class Example10 implements IGameExample {
     private passion: Passion;
-    private world: World;
+    private world?: World;
 
     readonly exampleTitle: string = 'Collisions';
 
@@ -114,7 +114,7 @@ export class Example10 implements IGameExample {
         this.player = new Body(this.passion, new Position(), new Position(16, 16), true);
         this.placeToFreeSpace(this.player, this.bodies);
 
-        this.bodies.forEach(b => b.initializeCollisions(this.world));
+        this.bodies.forEach(b => b.initializeCollisions(this.world!));
         this.player.initializeCollisions(this.world);
 
         this.addWorldLimits();
