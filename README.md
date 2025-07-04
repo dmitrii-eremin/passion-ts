@@ -25,7 +25,6 @@ All examples are simple, self-contained, and designed to demonstrate specific fe
 https://dmitrii-eremin.github.io/passion-ts/
 
 <a href="./src/game/examples/01_hello_passion.ts"><img src="./images/examples/hello_passion.gif" width=350></a>
-<a href="./src/game/examples/02_jump_game.ts"><img src="./images/examples/jump_game.gif" width=350></a>
 <a href="./src/game/examples/05_perlin_noise.ts"><img src="./images/examples/perlin.gif" width=350></a>
 <a href="./src/game/examples/08_tiled_map.ts"><img src="./images/examples/tiled.gif" width=350></a>
 <a href="./src/game/examples/06_snake_game.ts"><img src="./images/examples/snake.gif" width=350></a>
