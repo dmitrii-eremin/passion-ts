@@ -47,6 +47,7 @@ class ClipRectangle {
 
 export class Example03 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Draw API';
 
     private currentFrame: number = 0;
     private clip: ClipRectangle;
@@ -90,7 +91,7 @@ export class Example03 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(200, 150, 'Example 03: Draw API');
+        this.passion.system.init(200, 150, this.exampleTitle);
         this.passion.input.mouse(false);
         this.imageId = this.passion.resource.loadImage('./examples/cursor.png');
     }

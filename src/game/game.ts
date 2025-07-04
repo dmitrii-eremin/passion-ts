@@ -15,8 +15,8 @@ class Example {
     public name: string;
     public example: IGameExample;
 
-    constructor(name: string, example: IGameExample) {
-        this.name = name;
+    constructor(example: IGameExample) {
+        this.name = example.exampleTitle;
         this.example = example;
     }
 }
@@ -31,16 +31,17 @@ export class Game {
     constructor(passion: Passion) {
         this.passion = passion;
         this.examples = [
-            new Example('Credits', new ExampleCredits(this.passion)),
-            new Example('Hello, Passion!', new Example01(this.passion)),
-            new Example('Jump game', new Example02(this.passion)),
-            new Example('Draw API', new Example03(this.passion)),
-            new Example('Custom fonts', new Example04(this.passion)),
-            new Example('Perlin noise', new Example05(this.passion)),
-            new Example('Snake game', new Example06(this.passion)),
-            new Example('Color palette', new Example07(this.passion)),
-            new Example('Tiled map', new Example08(this.passion)),
-            new Example('Sound API', new Example09(this.passion)),
+            new Example(new ExampleCredits(this.passion)),
+
+            new Example(new Example01(this.passion)),
+            new Example(new Example02(this.passion)),
+            new Example(new Example03(this.passion)),
+            new Example(new Example04(this.passion)),
+            new Example(new Example05(this.passion)),
+            new Example(new Example06(this.passion)),
+            new Example(new Example07(this.passion)),
+            new Example(new Example08(this.passion)),
+            new Example(new Example09(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');
@@ -91,10 +92,10 @@ export class Game {
         let y = 24;
         for (const [index, example] of this.examples.entries()) {
             if (index === this.exampleIndex) {
-                this.passion.graphics.text(10, y, `>> ${index + 1}: ${example.name} <<`, 7);
+                this.passion.graphics.text(10, y, `>> ${index}: ${example.name} <<`, 7);
             }
             else {
-                this.passion.graphics.text(28, y, `${index + 1}: ${example.name}`, 5);
+                this.passion.graphics.text(28, y, `${index}: ${example.name}`, 5);
             }
             y += 12;
         }

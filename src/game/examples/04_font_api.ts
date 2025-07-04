@@ -5,6 +5,8 @@ import { BIOS_FONT, BOLDER_FONT, OTHER_FONT, TINY_FONT } from "./utils/custom_fo
 
 export class Example04 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Custom BDF fonts';
+
     private fonts: FontIndex[] = [];
 
     constructor(passion: Passion) {
@@ -29,7 +31,7 @@ export class Example04 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(500, 400, 'Example 04: Font API');
+        this.passion.system.init(500, 400, this.exampleTitle);
         this.fonts = [
             this.passion.resource.loadFont(BOLDER_FONT),
             this.passion.resource.loadFont(OTHER_FONT),

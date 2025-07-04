@@ -46,6 +46,7 @@ class Button {
 
 export class Example09 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Sound API';
 
     private buttons: Button[] = [];
 
@@ -71,7 +72,7 @@ export class Example09 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(480, 368, 'Example 09: Sound API');
+        this.passion.system.init(480, 368, this.exampleTitle);
 
         const xOffset = 50;
         const yOffset = 100;

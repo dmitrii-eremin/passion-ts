@@ -275,6 +275,7 @@ class SlimeEnemy extends Enemy {
 
 export class Example02 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Jump game';
 
     private tilesId: string = '';
 
@@ -311,7 +312,7 @@ export class Example02 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(220, 143, 'Example 02: Jump game');
+        this.passion.system.init(220, 143, this.exampleTitle);
         this.tilesId = this.passion.resource.loadImage('/examples/arcade_by_GrafxKid.png');
 
         this.player = new Player(this.passion);
@@ -323,9 +324,13 @@ export class Example02 implements IGameExample {
 
     private drawScore() {
         const textPos = new Position(7, 9);
-        const text = `SCORE: ${this.score}`;
-        this.passion.graphics.text(textPos.x + 1, textPos.y + 1, text, '#2d335c');
-        this.passion.graphics.text(textPos.x, textPos.y, text, '#eeeeee');
+        this.drawTextWithShadow(textPos.x, textPos.y, `SCORE: ${this.score}`);
+        this.drawTextWithShadow(135, textPos.y, `Press <space>`);
+    }
+
+    private drawTextWithShadow(x: number, y: number, text: string) {
+        this.passion.graphics.text(x + 1, y + 1, text, '#2d335c');
+        this.passion.graphics.text(x, y, text, '#eeeeee');
     }
 
     private updateCoins(dt: number) {
