@@ -18,6 +18,12 @@ Built with inspiration from Pyxel, but tailored for TypeScript developers.
 - Designed for rapid prototyping
 - Runs in modern browsers
 
+## Try examples
+All examples are simple, self-contained, and designed to demonstrate specific features or subsystems of the engine. You can find them in the [https://github.com/dmitrii-eremin/passion-ts/tree/main/src/game/examples](https://github.com/dmitrii-eremin/passion-ts/tree/main/src/game/examples) of the repository. Each example is easy to run and modify, making them ideal for learning, experimentation, or as a starting point for your own projects.
+
+**Also you can try them out right in your BROWSER right NOW!**
+https://dmitrii-eremin.github.io/passion-ts/
+
 ## Palette
 Passion uses exactly the same palette as pyxel engine. But you can change it anyhow you'd like.
 ![palette.png](../images/palette.png)
