@@ -313,7 +313,7 @@ export class Example02 implements IGameExample {
 
     onEnter() {
         this.passion.system.init(220, 143, this.exampleTitle);
-        this.tilesId = this.passion.resource.loadImage('/examples/arcade_by_GrafxKid.png');
+        this.tilesId = this.passion.resource.loadImage('./examples/arcade_by_GrafxKid.png');
 
         this.player = new Player(this.passion);
         this.background = new Background(this.passion, this.tilesId);
