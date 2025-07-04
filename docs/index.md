@@ -24,6 +24,17 @@ All examples are simple, self-contained, and designed to demonstrate specific fe
 **Also you can try them out right in your BROWSER right NOW!**
 https://dmitrii-eremin.github.io/passion-ts/
 
+<a href="../src/game/examples/01_hello_passion.ts"><img src="../images/examples/hello_passion.gif" width=350></a>
+<a href="../src/game/examples/02_jump_game.ts"><img src="../images/examples/jump_game.gif" width=350></a>
+<a href="../src/game/examples/05_perlin_noise.ts"><img src="../images/examples/perlin.gif" width=350></a>
+<a href="../src/game/examples/08_tiled_map.ts"><img src="../images/examples/tiled.gif" width=350></a>
+<a href="../src/game/examples/06_snake_game.ts"><img src="../images/examples/snake.gif" width=350></a>
+<a href="../src/game/examples/03_draw_api.ts"><img src="../images/examples/draw_api.gif" width=350></a>
+<a href="../src/game/examples/10_collisions.ts"><img src="../images/examples/collisions.gif" width=350></a>
+<a href="../src/game/examples/04_font_api.ts"><img src="../images/examples/fonts.gif" width=350></a>
+<a href="../src/game/examples/09_sound_api.ts"><img src="../images/examples/sound_api.gif" width=350></a>
+<a href="../src/game/examples/07_color_palette.ts"><img src="../images/examples/palette.gif" width=350></a>
+
 ## Palette
 Passion uses exactly the same palette as pyxel engine. But you can change it anyhow you'd like.
 ![palette.png](../images/palette.png)
