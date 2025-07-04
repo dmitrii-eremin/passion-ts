@@ -7,6 +7,7 @@ import { Example05 } from "./examples/05_perlin_noise";
 import { Example06 } from "./examples/06_snake_game";
 import { Example07 } from "./examples/07_color_palette";
 import { Example08 } from "./examples/08_tiled_map";
+import { Example09 } from "./examples/09_sound_api";
 import { ExampleCredits } from "./examples/credits";
 import type { IGameExample } from "./examples/example";
 
@@ -39,6 +40,7 @@ export class Game {
             new Example('Snake game', new Example06(this.passion)),
             new Example('Color palette', new Example07(this.passion)),
             new Example('Tiled map', new Example08(this.passion)),
+            new Example('Sound API', new Example09(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');
