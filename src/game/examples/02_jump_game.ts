@@ -35,7 +35,7 @@ class Player implements MaterialObject {
     constructor(passion: Passion) {
         this.passion = passion;
 
-        this.imageId = passion.resource.loadImage('/examples/hero.png');
+        this.imageId = passion.resource.loadImage('./examples/hero.png');
 
         const grid = new AnimationGrid(this.size.x, this.size.y);
         this.animation = new Animation(grid.range('2-6', '3'), 0.075);
