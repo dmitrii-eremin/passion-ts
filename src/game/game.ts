@@ -48,8 +48,8 @@ export class Game {
 
         this.passion.system.init(420, 240, 'Passion examples');
 
-        this.currentExample = this.examples[this.examples.length - 1].example;
-        this.currentExample.onEnter();
+        // this.currentExample = this.examples[this.examples.length - 1].example;
+        // this.currentExample.onEnter();
     }
 
     update(dt: number) {
