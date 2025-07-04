@@ -122,6 +122,7 @@ class Direction {
 
 export class Example06 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Snake game';
 
     private score: number = 0;
     private snake: Snake;
@@ -190,7 +191,7 @@ export class Example06 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(64, 84, 'Example 06: Snake game');
+        this.passion.system.init(64, 84, this.exampleTitle);
         this.reset();
     }
     onLeave() {}

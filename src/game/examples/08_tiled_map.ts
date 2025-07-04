@@ -287,6 +287,7 @@ class Scene {
 
 export class Example08 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Tiled map';
 
     private scene?: Scene;
     private image: ImageIndex = '';
@@ -305,7 +306,7 @@ export class Example08 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(480, 368, 'Example 08: Tiled map');
+        this.passion.system.init(480, 368, this.exampleTitle);
         this.image = this.passion.resource.loadImage('./examples/tilesheet.png');
         this.passion.tiled.load('./examples/tilemap.tmx').then(map => this.scene = new Scene(this.passion, this.image, map));
     }

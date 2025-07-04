@@ -3,11 +3,14 @@ import type { IGameExample } from "./example";
 
 export class ExampleCredits implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Credits';
+
     private lines = [
         'Code: Dmitrii Eremin',
         'Jump game sprites: GrafxKid',
         'Tiled map sprites: Kenney.nl',
-        'Assets: OpenGameArt community'
+        'Assets: OpenGameArt community',
+        'Sound effects: Dmitrii Eremin & https://www.bfxr.net'
     ];
 
     constructor(passion: Passion) {
@@ -28,7 +31,7 @@ export class ExampleCredits implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(350, 270, 'Credits');
+        this.passion.system.init(350, 270, this.exampleTitle);
     }
 
     onLeave() {

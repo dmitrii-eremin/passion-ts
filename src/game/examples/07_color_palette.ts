@@ -3,6 +3,7 @@ import type { IGameExample } from "./example";
 
 export class Example07 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Color palette';
 
     private originalPalette: string[] = [];
     private otherPalette: string[] = [
@@ -76,7 +77,7 @@ export class Example07 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(480, 360, 'Example 07: Color palette');
+        this.passion.system.init(480, 360, this.exampleTitle);
         this.originalPalette = this.passion.graphics.pal();
         this.currentPalette = this.originalPalette;
     }

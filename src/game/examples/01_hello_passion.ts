@@ -3,6 +3,7 @@ import type { IGameExample } from "./example";
 
 export class Example01 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Hello, passion!';
 
     private currentFrame: number = 0;
     private imageId: string = '';
@@ -25,7 +26,7 @@ export class Example01 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(200, 140, 'Example 01: Hello, passion!');
+        this.passion.system.init(200, 140, this.exampleTitle);
         this.imageId = this.passion.resource.loadImage('/examples/hero.png');
     }
 

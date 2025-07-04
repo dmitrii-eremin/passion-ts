@@ -10,6 +10,8 @@ function getNoiseColor(val: number): number {
 
 export class Example05 implements IGameExample {
     private passion: Passion;
+    readonly exampleTitle: string = 'Perlin noise';
+
     private frames: number = 0;
     private readonly size = 128;
 
@@ -33,7 +35,7 @@ export class Example05 implements IGameExample {
     }
 
     onEnter() {
-        this.passion.system.init(this.size, this.size, 'Example 05: Perlin noise');
+        this.passion.system.init(this.size, this.size, this.exampleTitle);
         this.frames = 0;
     }
 
