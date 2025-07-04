@@ -173,6 +173,11 @@ export class Graphics implements IGraphics, SubSystem {
             return;
         }
 
+        x = Math.ceil(x);
+        y = Math.ceil(y);
+        w = Math.ceil(w);
+        h = Math.ceil(h);
+
         this.data.context!.fillStyle = this.palette.getColor(col);
         this.data.context!.fillRect(x, y, w, h);
     }
@@ -181,6 +186,11 @@ export class Graphics implements IGraphics, SubSystem {
         if (!this.data.isReady()) {
             return;
         }
+
+        x = Math.ceil(x);
+        y = Math.ceil(y);
+        w = Math.ceil(w);
+        h = Math.ceil(h);
 
         this.line(x, y, x + w - 1, y, col);
         this.line(x, y, x, y + h - 1, col);
