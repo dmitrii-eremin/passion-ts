@@ -161,6 +161,11 @@ Draws text at the specified position using the current font.
 - **col**: `Color` — The color index.
 - **returns**: `void`
 
+##### `textSize(text: string): Size | undefined`
+Returns the size (width and height) of the given text string using the current font. Useful for aligning or measuring text before rendering.
+- **text**: `string` — The text to measure.
+- **returns**: `Size | undefined` — The size of the text as a `Size` object, or `undefined` if no font is set.
+
 ##### `blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void`
 Draws (blits) a region of an image to the screen, with optional color key, rotation, and scaling.
 - **x**: `number` — Destination x.

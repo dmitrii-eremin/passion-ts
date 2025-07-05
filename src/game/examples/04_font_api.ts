@@ -1,5 +1,6 @@
 import type { FontIndex } from "../../passion/constants";
 import type { Passion } from "../../passion/passion";
+import { Size } from "../../passion/stdlib/size";
 import type { IGameExample } from "./example";
 import { BIOS_FONT, BOLDER_FONT, OTHER_FONT, TINY_FONT } from "./utils/custom_fonts";
 
@@ -28,6 +29,13 @@ export class Example04 implements IGameExample {
             this.passion.graphics.font(font);
             this.passion.graphics.text(10, 10 + 35 * (1 + index), testString, index + 4);
         });
+
+        this.passion.graphics.font();
+
+        const text = 'Viel\' on muitaki sanoja';
+        const size = this.passion.graphics.textSize(text) ?? new Size(1, 1);
+        this.passion.graphics.rectb(100, 300, size.width, size.height, 8);
+        this.passion.graphics.text(100, 300, text, 15);
     }
 
     onEnter() {

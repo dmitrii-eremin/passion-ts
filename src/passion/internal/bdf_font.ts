@@ -1,4 +1,5 @@
 import { Font, Bitmap } from 'bdfparser';
+import { Size } from '../stdlib/size';
 
 export type BdfFontRenderCallback = (x: number, y: number) => void;
 
@@ -32,5 +33,16 @@ export class BdfFont {
                 }
             }
         }
+    }
+
+    getTextSize(text: string): Size {
+        if (!this.fontObj) return new Size(0, 0);
+        const bitmap: Bitmap = this.fontObj.draw(text, {
+            linelimit: Number.MAX_SAFE_INTEGER - 1
+        });
+        const bindata: string[] = bitmap.bindata;
+        const height = bindata.length;
+        const width = bindata.reduce((max, row) => Math.max(max, row.length), 0);
+        return new Size(width, height);
     }
 }

@@ -2,8 +2,10 @@ import type { FontIndex, ImageIndex } from "./constants";
 import { type Color } from "./constants";
 import type { PassionData } from "./data";
 import { PassionImage } from "./image";
+import type { BdfFont } from "./internal/bdf_font";
 import { Palette } from "./internal/palette";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
+import type { Size } from "./stdlib/size";
 import type { SubSystem } from "./subsystem";
 
 export interface IGraphics {
@@ -13,7 +15,9 @@ export interface IGraphics {
     clip(left?: number, top?: number, width?: number, height?: number): void;
 
     pal(colors?: string[]): string[];
+
     font(fontIndex?: FontIndex): void;
+    textSize(text: string): Size | undefined;
 
     cls(col: Color): void;
 
@@ -101,6 +105,14 @@ export class Graphics implements IGraphics, SubSystem {
         } else {
             this.currentFont = fontIndex;
         }
+    }
+
+    textSize(text: string): Size | undefined {
+        if (this.currentFont === undefined) {
+            return undefined;
+        }
+        const font: BdfFont | undefined = this.data.fonts.get(this.currentFont);
+        return font?.getTextSize(text);
     }
 
     cls(col: Color) {

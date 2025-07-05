@@ -57,6 +57,7 @@ The latest documentation is always available in this readme file, or you can bro
   * [Animation](./docs/stdlib/animation.md) — Animation utilities for sprite and frame-based animation.
   * [Tween](./docs/stdlib/tween.md) — Tweening and Easing Utility API Reference
   * [Position](./docs/stdlib/position.md) — 2D position utility class.
+  * [Size](./docs/stdlib/size.md) — 2D size utility class.
   * [Rect](./docs/stdlib/rect.md) — 2D rectangle utility class.
   * [Tiled](./docs/stdlib/tiled.md) — Load and render .tmx tilemaps (Tiled).
 
