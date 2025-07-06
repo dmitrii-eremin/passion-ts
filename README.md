@@ -5,6 +5,8 @@
 npm install @dmitrii-eremin/passion-engine
 ```
 
+Take a look at this simple guide, I promise, you won't regret: https://github.com/dmitrii-eremin/passion-ts-example
+
 Passion is designed for rapid prototyping and educational use, with a focus on clarity, hackability, and fun. The engine is fully written in TypeScript, making it type-safe and easy to extend. All rendering is done on a single HTMLCanvasElement, and the engine is dependency-free, running in any modern browser.
 
 Whether you're making a jam game, a teaching demo, or a nostalgic pixel adventure, Passion gives you the tools to get started quickly and iterate fast. Explore the API below to see how each subsystem works and how you can use them together to build your own games.
