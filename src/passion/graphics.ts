@@ -1,6 +1,7 @@
-import type { FontIndex, ImageIndex } from "./constants";
+import type { CanvasIndex, FontIndex, ImageIndex } from "./constants";
 import { type Color } from "./constants";
 import type { PassionData } from "./data";
+import type { Drawable } from "./drawable";
 import { PassionImage } from "./image";
 import type { BdfFont } from "./internal/bdf_font";
 import { Palette } from "./internal/palette";
@@ -18,6 +19,8 @@ export interface IGraphics {
 
     font(fontIndex?: FontIndex): void;
     textSize(text: string): Size | undefined;
+
+    setCanvas(canvasIndex?: CanvasIndex): void;
 
     cls(col: Color): void;
 
@@ -41,7 +44,7 @@ export interface IGraphics {
     fill(x: number, y: number, col: Color): void;
     text(x: number, y: number, text: string, col: Color): void;
 
-    blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void;
+    blt(x: number, y: number, img: ImageIndex | CanvasIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void;
 }
 
 export class Graphics implements IGraphics, SubSystem {
@@ -50,6 +53,7 @@ export class Graphics implements IGraphics, SubSystem {
 
     private defaultFont?: FontIndex;
     private currentFont?: FontIndex;
+    private customCanvas?: CanvasIndex;
 
     constructor(data: PassionData) {
         this.data = data;
@@ -63,7 +67,7 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     camera(x?: number, y?: number) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -71,15 +75,15 @@ export class Graphics implements IGraphics, SubSystem {
         if (y === undefined) y = 0;
 
         const scale = this.data.displayScale;
-        this.data.context!.setTransform(scale, 0, 0, scale, -x * scale, -y * scale);
+        this.currentContext.setTransform(scale, 0, 0, scale, -x * scale, -y * scale);
     }
 
     clip(left?: number, top?: number, width?: number, height?: number) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         if (left === undefined && top === undefined && width === undefined && height === undefined) {
             ctx.restore();
         }
@@ -115,26 +119,54 @@ export class Graphics implements IGraphics, SubSystem {
         return font?.getTextSize(text);
     }
 
+    setCanvas(canvasIndex?: CanvasIndex): void {
+        this.customCanvas = canvasIndex;
+    }
+
+    private get currentCanvas(): HTMLCanvasElement | undefined {
+        if (this.customCanvas !== undefined) {
+            const canvasToRender = this.data.canvases.get(this.customCanvas);
+            if (canvasToRender !== undefined) {
+                return canvasToRender.canvas;
+            }
+        }
+        if (this.data.isReady()) {
+            return this.data.canvas;
+        }
+    }
+
+    private get currentContext(): CanvasRenderingContext2D | undefined {
+        if (this.customCanvas !== undefined) {
+            const canvasToRender = this.data.canvases.get(this.customCanvas);
+            if (canvasToRender !== undefined) {
+                return canvasToRender.context;
+            }
+        }
+        if (this.data.isReady()) {
+            return this.data.context;
+        }
+    }
+
     cls(col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const transform = this.data.context!.getTransform();
-        this.data.context!.resetTransform();
+        const transform = this.currentContext.getTransform();
+        this.currentContext.resetTransform();
 
-        this.data.context!.fillStyle = this.palette.getColor(col);
-        this.data.context!.fillRect(-100, -100, 100 + this.data.canvas!.width, 100 + this.data.canvas!.height);
+        this.currentContext.fillStyle = this.palette.getColor(col);
+        this.currentContext.fillRect(-100, -100, 100 + this.currentCanvas.width, 100 + this.currentCanvas.height);
 
-        this.data.context!.setTransform(transform);
+        this.currentContext.setTransform(transform);
     }
 
     pget(x: number, y: number): Color {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return 0;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         const imageData = ctx.getImageData(x, y, 1, 1).data;
         const [r, g, b, _] = imageData;
         const color = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
@@ -142,17 +174,17 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     pset(x: number, y: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         ctx.fillStyle = this.palette.getColor(col);
         ctx.fillRect(Math.ceil(x), Math.ceil(y), 1, 1);
     }
 
     line(x1: number, y1: number, x2: number, y2: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -161,7 +193,7 @@ export class Graphics implements IGraphics, SubSystem {
         x2 = Math.ceil(x2);
         y2 = Math.ceil(y2);
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         ctx.fillStyle = this.palette.getColor(col);
 
         let dx = Math.abs(x2 - x1);
@@ -181,7 +213,7 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     rect(x: number, y: number, w: number, h: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -190,12 +222,12 @@ export class Graphics implements IGraphics, SubSystem {
         w = Math.ceil(w);
         h = Math.ceil(h);
 
-        this.data.context!.fillStyle = this.palette.getColor(col);
-        this.data.context!.fillRect(x, y, w, h);
+        this.currentContext.fillStyle = this.palette.getColor(col);
+        this.currentContext.fillRect(x, y, w, h);
     }
 
     rectb(x: number, y: number, w: number, h: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -211,11 +243,11 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     circ(x: number, y: number, r: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         
         ctx.fillStyle = this.palette.getColor(col);
         const r2 = r * r;
@@ -230,14 +262,14 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     circb(x: number, y: number, r: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
         x = Math.ceil(x);
         y = Math.ceil(y);
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         ctx.fillStyle = this.palette.getColor(col);
 
         let r2 = r * r;
@@ -254,11 +286,11 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     elli(x: number, y: number, w: number, h: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         ctx.fillStyle = this.palette.getColor(col);
 
         const a = w / 2;
@@ -273,11 +305,11 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     ellib(x: number, y: number, w: number, h: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const ctx = this.data.context!;
+        const ctx = this.currentContext;
         ctx.fillStyle = this.palette.getColor(col);
 
         const a = w / 2;
@@ -301,7 +333,7 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -332,7 +364,7 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     trib(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
@@ -342,12 +374,12 @@ export class Graphics implements IGraphics, SubSystem {
     }
 
     fill(x: number, y: number, col: Color) {
-        if (!this.data.isReady()) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
-        const width = this.data.canvas!.width;
-        const height = this.data.canvas!.height;
+        const width = this.currentCanvas.width;
+        const height = this.currentCanvas.height;
 
         const targetColor = this.pget(x, y);
         if (targetColor === col) {
@@ -385,12 +417,13 @@ export class Graphics implements IGraphics, SubSystem {
         });
     }
 
-    blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number) {
-        if (!this.data.isReady()) {
+    blt(x: number, y: number, img: ImageIndex | CanvasIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number) {
+        if (this.currentCanvas === undefined || this.currentContext === undefined) {
             return;
         }
 
         const color = colkey ? this.palette.getColor(colkey) : undefined;
-        this.data.images.get(img)?.blt(this.data.context!, x, y, u, v, w, h, color, rotate, scale);
+        const drawable: Drawable | undefined = this.data.images.get(img) ?? this.data.canvases.get(img);
+        drawable?.blt(this.currentContext, x, y, u, v, w, h, color, rotate, scale);
     }
 }

@@ -26,7 +26,7 @@ export class Passion {
 
     constructor(canvas: HTMLCanvasElement) {
         this.data.canvas = canvas;
-        this.data.context = this.data.canvas.getContext('2d');
+        this.data.context = this.data.canvas.getContext('2d') ?? undefined;
 
         const onBeforeAll = (dt: number) => {
             this.data.system?.onBeforeAll(dt);

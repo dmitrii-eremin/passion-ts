@@ -7,7 +7,7 @@ npm install @dmitrii-eremin/passion-engine
 
 Passion is designed for rapid prototyping and educational use, with a focus on clarity, hackability, and fun. The engine is fully written in TypeScript, making it type-safe and easy to extend. All rendering is done on a single HTMLCanvasElement, and the engine is dependency-free, running in any modern browser.
 
-Whether you're making a jam game, a teaching demo, or a nostalgic pixel adventure, Passion gives you the tools to get started quickly and iterate fast. Explore the API below to see how each subsystem works and how you can use them together to build your own games.
+Whether you're making a jam game, a teaching demo, or a nostalgic pixel adventure, Passion gives you the tools to get started quickly and iterate fast. Explore the API below to see how each subsystem works and how yo\u can use them together to build your own games.
 
 ## Inspiration
 Built with inspiration from Pyxel, but tailored for TypeScript developers.
@@ -33,6 +33,7 @@ https://dmitrii-eremin.github.io/passion-ts/
 <a href="../src/game/examples/04_font_api.ts"><img src="../images/examples/fonts.png" width=350></a>
 <a href="../src/game/examples/09_sound_api.ts"><img src="../images/examples/sound_api.png" width=350></a>
 <a href="../src/game/examples/07_color_palette.ts"><img src="../images/examples/palette.png" width=350></a>
+<a href="../src/game/examples/11_offscreen_rendering.ts"><img src="../images/examples/offscreen_rendering.png" width=350></a>
 
 ## Palette
 Passion uses exactly the same palette as pyxel engine. But you can change it anyhow you'd like.
@@ -45,7 +46,7 @@ The latest documentation is always available in this readme file, or you can bro
 
 * [Passion](./passion/passion.md) — the entry point for all API functions in the engine.
   * [ISystem](./passion/system.md) — Core game loop, window, and timing management.
-  * [IResource](./passion/resource.md) — Image, sound, and font loading and resource management.
+  * [IResource](./passion/resource.md) — Image, sound, font, and canvas loading and resource management.
   * [IGraphics](./passion/graphics.md) — Drawing, palette, and rendering functions for 2D graphics.
   * [IInput](./passion/input.md) — Keyboard, mouse, and touch input handling.
     * [IKeys](./passion/keys.md) — Key codes and keyboard mapping reference.
@@ -82,6 +83,8 @@ passion.system.init(240, 180, 'My Passion Game', 3);
 // Load resources
 const imageIndex = passion.resource.loadImage('./cat_16x16.png');
 const soundIndex = passion.resource.loadSound('./Jump1.wav');
+const fontIndex = passion.resource.loadFont(bdfFontString); // BDF font string
+const canvasIndex = passion.resource.createCanvas(128, 128); // Offscreen canvas
 
 // Main update and draw functions
 function update(dt: number) {
@@ -92,6 +95,7 @@ function draw() {
   passion.graphics.cls(0); // Clear screen with color 0
   passion.graphics.text(10, 10, 'Hello, Passion!', 7);
   passion.graphics.blt(50, 50, imageIndex, 0, 0, 16, 16); // Draw image
+  passion.graphics.blt(100, 50, canvasIndex, 0, 0, 128, 128); // Draw offscreen canvas
 }
 
 // Start the game loop

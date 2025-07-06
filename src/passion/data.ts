@@ -9,18 +9,20 @@ import { Sound } from './sound';
 import { Network } from './network';
 
 import { WSClient } from './internal/ws_client';
-import type { ImageIndex, FontIndex, SoundIndex, WebSocketIndex } from './constants';
+import type { ImageIndex, FontIndex, SoundIndex, WebSocketIndex, CanvasIndex } from './constants';
 import type { PassionStorage } from './storage';
 import type { BdfFont } from './internal/bdf_font';
+import type { PassionCanvas } from './canvas';
 
 export class PassionData {
-    public canvas: HTMLCanvasElement | null = null;
-    public context: CanvasRenderingContext2D | null = null;
+    public canvas: HTMLCanvasElement | undefined = undefined;
+    public context: CanvasRenderingContext2D | undefined = undefined;
 
     public images: Map<ImageIndex, PassionImage> = new Map<ImageIndex, PassionImage>();
     public fonts: Map<FontIndex, BdfFont> = new Map<FontIndex, BdfFont>();
     public sounds: Map<SoundIndex, Sound> = new Map<SoundIndex, Sound>();
     public sockets: Map<WebSocketIndex, WSClient> = new Map<WebSocketIndex, WSClient>();
+    public canvases: Map<CanvasIndex, PassionCanvas> = new Map<CanvasIndex, PassionCanvas>();
 
     displayScale: number = 1;
     touchIdentified?: number;
@@ -35,6 +37,6 @@ export class PassionData {
     storage?: PassionStorage;
 
     isReady(): boolean {
-        return this.canvas !== null && this.context !== null;
+        return this.canvas !== undefined && this.context !== undefined;
     }
 }

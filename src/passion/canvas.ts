@@ -1,20 +1,18 @@
 import type { Drawable } from "./drawable";
 
-export class PassionImage implements Drawable {
-    private data: HTMLImageElement;
-    private isReady: boolean = false;
+export class PassionCanvas implements Drawable {
+    public readonly canvas: HTMLCanvasElement;
+    public readonly context: CanvasRenderingContext2D;
 
-    width: number = 0;
-    height: number = 0;
-
-    constructor(path: string) {
-        this.data = new Image();
-        this.data.src = path;
-        this.data.onload = () => {
-            this.width = this.data.width;
-            this.height = this.data.height;
-            this.isReady = true;
-        };
+    constructor(width: number, height: number) {
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = width;
+        this.canvas.height = height;
+        const ctx = this.canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error('Failed to get 2D context');
+        }
+        this.context = ctx;
     }
 
     blt(
@@ -30,64 +28,37 @@ export class PassionImage implements Drawable {
         scaleX?: number,
         scaleY?: number,
     ) {
-        if (!this.isReady) return;
-
         x = Math.ceil(x);
         y = Math.ceil(y);
-
-        // Save context state
-        canvas.save();
-
-        // Handle flipping
         let drawW = Math.abs(w);
         let drawH = Math.abs(h);
-
-        // Set transform origin to (x, y)
+        canvas.save();
         canvas.translate(x, y);
-
-        // Apply scaling if specified
         if (scaleX) {
             scaleY = scaleY ?? scaleX;
             canvas.scale(scaleX, scaleY);
         }
-
-        // Handle flipping
         const flipX = w < 0 ? -1 : 1;
         const flipY = h < 0 ? -1 : 1;
         canvas.scale(flipX, flipY);
-
-        // If flipped, translate by width/height to correct position
         if (w < 0) canvas.translate(-drawW, 0);
         if (h < 0) canvas.translate(0, -drawH);
-
-        // Move origin to center of the drawn region (after flipping)
         canvas.translate(drawW / 2, drawH / 2);
-
-        // Apply rotation if specified (now around center)
         if (rotate) {
-            // If flipped odd number of times, invert rotation direction
             const flipCount = (w < 0 ? 1 : 0) + (h < 0 ? 1 : 0);
             const angle = (flipCount % 2 === 1 ? -1 : 1) * (rotate * Math.PI / 180);
             canvas.rotate(angle);
         }
-
-        // Move origin back to top-left of the drawn region
         canvas.translate(-drawW / 2, -drawH / 2);
-
-        // If colkey is specified, use an offscreen canvas to filter out the color
         if (colkey) {
             const offCanvas = document.createElement('canvas');
             offCanvas.width = drawW;
             offCanvas.height = drawH;
             const offCtx = offCanvas.getContext('2d')!;
-            offCtx.drawImage(this.data, u, v, drawW, drawH, 0, 0, drawW, drawH);
-
-            // Get image data and filter out colkey
+            offCtx.drawImage(this.canvas, u, v, drawW, drawH, 0, 0, drawW, drawH);
             const imgData = offCtx.getImageData(0, 0, drawW, drawH);
-            // Parse colkey string (e.g. "#001122" or "#001122FF")
             let hex = colkey.startsWith('#') ? colkey.slice(1) : colkey;
             if (hex.length === 3) {
-                // Expand short hex (#123 -> #112233)
                 hex = hex.split('').map(c => c + c).join('');
             }
             let rKey = parseInt(hex.slice(0, 2), 16);
@@ -101,22 +72,18 @@ export class PassionImage implements Drawable {
                     imgData.data[i + 2] === bKey &&
                     imgData.data[i + 3] === aKey
                 ) {
-                    imgData.data[i + 3] = 0; // Set alpha to 0
+                    imgData.data[i + 3] = 0;
                 }
             }
             offCtx.putImageData(imgData, 0, 0);
-
             canvas.drawImage(offCanvas, 0, 0);
         } else {
-            // Draw directly from source image
             canvas.drawImage(
-                this.data,
-                u, v, drawW, drawH, // source rect
-                0, 0, drawW, drawH  // destination rect
+                this.canvas,
+                u, v, drawW, drawH,
+                0, 0, drawW, drawH
             );
         }
-
-        // Restore context state
         canvas.restore();
     }
 }

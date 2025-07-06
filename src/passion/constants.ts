@@ -1,4 +1,5 @@
 export type ImageIndex = string;
+export type CanvasIndex = string;
 export type FontIndex = string;
 export type SoundIndex = string;
 export type WebSocketIndex = string;

@@ -9,6 +9,7 @@ import { Example07 } from "./examples/07_color_palette";
 import { Example08 } from "./examples/08_tiled_map";
 import { Example09 } from "./examples/09_sound_api";
 import { Example10 } from "./examples/10_collisions";
+import { Example11 } from "./examples/11_offscreen_rendering";
 import { ExampleCredits } from "./examples/credits";
 import type { IGameExample } from "./examples/example";
 
@@ -44,12 +45,13 @@ export class Game {
             new Example(new Example08(this.passion)),
             new Example(new Example09(this.passion)),
             new Example(new Example10(this.passion)),
+            new Example(new Example11(this.passion)),
         ];
 
         this.passion.system.init(420, 240, 'Passion examples');
 
-        this.currentExample = this.examples[4].example;
-        this.currentExample.onEnter();
+        // this.currentExample = this.examples[this.examples.length - 1].example;
+        // this.currentExample.onEnter();
     }
 
     update(dt: number) {

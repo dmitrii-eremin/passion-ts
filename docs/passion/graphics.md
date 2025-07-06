@@ -166,18 +166,23 @@ Returns the size (width and height) of the given text string using the current f
 - **text**: `string` — The text to measure.
 - **returns**: `Size | undefined` — The size of the text as a `Size` object, or `undefined` if no font is set.
 
-##### `blt(x: number, y: number, img: ImageIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void`
+##### `blt(x: number, y: number, img: ImageIndex | CanvasIndex, u: number, v: number, w: number, h: number, colkey?: Color, rotate?: number, scale?: number): void`
 Draws (blits) a region of an image to the screen, with optional color key, rotation, and scaling.
 - **x**: `number` — Destination x.
 - **y**: `number` — Destination y.
-- **img**: `ImageIndex` — The image index to draw from.
-- **u**: `number` — Source x in the image.
-- **v**: `number` — Source y in the image.
+- **img**: `ImageIndex | CanvasIndex` — The image or canvas index to draw from.
+- **u**: `number` — Source x in the image/canvas.
+- **v**: `number` — Source y in the image/canvas.
 - **w**: `number` — Width of the region.
 - **h**: `number` — Height of the region.
 - **colkey**: `Color` *(optional)* — Transparent color index.
 - **rotate**: `number` *(optional)* — Rotation in degrees.
 - **scale**: `number` *(optional)* — Scale factor.
+- **returns**: `void`
+
+##### `setCanvas(canvasIndex?: CanvasIndex): void`
+Sets the current drawing canvas. If omitted, drawing will use the main screen canvas.
+- **canvasIndex**: `CanvasIndex` *(optional)* — The index of the offscreen canvas to draw to. If omitted, resets to the main canvas.
 - **returns**: `void`
 
 ---

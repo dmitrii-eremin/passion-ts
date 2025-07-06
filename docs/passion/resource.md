@@ -1,6 +1,6 @@
 # IResource — Resource Management API Reference
 
-The `IResource` interface provides a simple, type-safe, and efficient way to load and manage game assets in Passion. It is responsible for loading images and sounds, assigning them unique indices, and making them available for use throughout your game. This subsystem abstracts away the details of asset management, allowing you to focus on game logic and creativity.
+The `IResource` interface provides a simple, type-safe, and efficient way to load and manage game assets in Passion. It is responsible for loading images, sounds, fonts, and canvases, assigning them unique indices, and making them available for use throughout your game. This subsystem abstracts away the details of asset management, allowing you to focus on game logic and creativity.
 
 ---
 
@@ -29,10 +29,17 @@ Loads a sound from the specified path and returns a unique sound index for later
 - **returns**: `SoundIndex` — A unique index representing the loaded sound.
 
 ##### `loadFont(fontData: string): FontIndex`
-Loads a bitmap font from a BDF font string and returns a unique font index for later reference.
+Loads a bitmap font from a BDF font string and returns a unique font index for later reference. Font loading is asynchronous; the font will be available after it is parsed.
 
 - **fontData**: `string` — The contents of a BDF font file as a string.
 - **returns**: `FontIndex` — A unique index representing the loaded font.
+
+##### `createCanvas(width?: number, height?: number): CanvasIndex`
+Creates a new offscreen canvas and returns a unique canvas index for later reference.
+
+- **width**: `number` *(optional)* — The width of the canvas. Defaults to the system width or 256.
+- **height**: `number` *(optional)* — The height of the canvas. Defaults to the system height or 256.
+- **returns**: `CanvasIndex` — A unique index representing the created canvas.
 
 ---
 
@@ -43,10 +50,11 @@ Loads a bitmap font from a BDF font string and returns a unique font index for l
 const playerImg: ImageIndex = passion.resource.loadImage('./images/player.png');
 const jumpSnd: SoundIndex = passion.resource.loadSound('./sounds/jump.wav');
 const font: FontIndex = passion.resource.loadFont(bdfFontString);
+const offscreen: CanvasIndex = passion.resource.createCanvas(128, 128);
 
 function draw(): void {
     passion.graphics.blt(10, 10, playerImg, 0, 0, 16, 16);
-
+    passion.graphics.blt(50, 50, offscreen, 0, 0, 128, 128);
     passion.graphics.font(font);
     passion.graphics.text(10, 30, 'Hello');
 }
