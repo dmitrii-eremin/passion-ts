@@ -185,6 +185,11 @@ Sets the current drawing canvas. If omitted, drawing will use the main screen ca
 - **canvasIndex**: `CanvasIndex` *(optional)* — The index of the offscreen canvas to draw to. If omitted, resets to the main canvas.
 - **returns**: `void`
 
+##### `getImageSize(imageIndex: ImageIndex): Size | undefined`
+Returns the size (width and height) of the given image as a `Size` object.
+- **imageIndex**: `ImageIndex` — The index of the image to query.
+- **returns**: `Size | undefined` — The size of the image as a `Size` object, or `undefined` if the image is not found.
+
 ---
 
 ## Example Usage

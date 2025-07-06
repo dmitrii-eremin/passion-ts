@@ -6,7 +6,7 @@ import { PassionImage } from "./image";
 import type { BdfFont } from "./internal/bdf_font";
 import { Palette } from "./internal/palette";
 import { DefaultBdfFont } from "./resources/default_bdf_font";
-import type { Size } from "./stdlib/size";
+import { Size } from "./stdlib/size";
 import type { SubSystem } from "./subsystem";
 
 export interface IGraphics {
@@ -18,7 +18,9 @@ export interface IGraphics {
     pal(colors?: string[]): string[];
 
     font(fontIndex?: FontIndex): void;
+
     textSize(text: string): Size | undefined;
+    getImageSize(image: ImageIndex): Size | undefined;
 
     setCanvas(canvasIndex?: CanvasIndex): void;
 
@@ -117,6 +119,13 @@ export class Graphics implements IGraphics, SubSystem {
         }
         const font: BdfFont | undefined = this.data.fonts.get(this.currentFont);
         return font?.getTextSize(text);
+    }
+
+    getImageSize(imageIndex: ImageIndex): Size | undefined {
+        const image = this.data.images.get(imageIndex);
+        if (image !== undefined) {
+            return new Size(image.width, image.height);
+        }
     }
 
     setCanvas(canvasIndex?: CanvasIndex): void {
