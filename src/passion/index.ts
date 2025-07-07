@@ -16,7 +16,7 @@ export * from './storage';
 export * from './system';
 
 export * from './stdlib/animation';
-export { Bump } from './stdlib/bump'
+export * from './stdlib/bump';
 export * from './stdlib/camera';
 export * from './stdlib/position';
 export * from './stdlib/rect';
