@@ -1,6 +1,6 @@
 {
   "name": "@dmitrii-eremin/passion-engine",
-  "version": "1.0.118",
+  "version": "1.0.119",
   "description": "A modern, lightweight browser game engine for TypeScript, inspired by Pyxel.",
   "author": "Dmitrii Eremin <erem.dmitrii@gmail.com>",
   "license": "MIT",
@@ -13,8 +13,8 @@
     "url": "https://github.com/dmitrii-eremin/passion-ts/issues"
   },
   "type": "module",
-  "main": "engine-build/passion.js",
-  "types": "engine-build/passion.d.ts",
+  "main": "engine-build/index.js",
+  "types": "engine-build/index.d.ts",
   "files": [
     "engine-build/",
     "images/logo.png",
