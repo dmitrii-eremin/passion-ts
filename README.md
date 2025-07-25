@@ -6,6 +6,7 @@ npm install @dmitrii-eremin/passion-engine
 ```
 
 Take a look at this simple guide, I promise, you won't regret: https://github.com/dmitrii-eremin/passion-ts-example
+Or take a look at another small project developed with passion engine - a **chip-8 emulator**: https://github.com/dmitrii-eremin/chip-8-on-passion
 
 Passion is designed for rapid prototyping and educational use, with a focus on clarity, hackability, and fun. The engine is fully written in TypeScript, making it type-safe and easy to extend. All rendering is done on a single HTMLCanvasElement, and the engine is dependency-free, running in any modern browser.
 
